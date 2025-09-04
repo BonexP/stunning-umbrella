@@ -1,6 +1,7 @@
 % This is a simple sample document.  For more complicated documents take a look in the exercise tab. Note that everything that comes after a % symbol is treated as comment and ignored when the code is compiled.
+% !TEX program = xelatex
 
-\documentclass{article} % \documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble
+\documentclass{ctexart} % \documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble
 
 \usepackage{amsmath} % \usepackage is a command that allows you to add functionality to your LaTeX code
 
@@ -20,10 +21,60 @@
 \begin{equation} % Creates an equation environment and is compiled as math
   \gamma^2+\theta^2=\omega^2
 \end{equation}
+
+这是一个物理公式：
+\begin{equation}
+  e=mc^2 
+  \label{eq:energy}
+\end{equation}
+
+$e=mc^2$
+
+$$a^2=b^2+c^2$$
+
+如公式~\eqref{eq:energy}~所示，能量与质量成正比。
 If I do not leave any blank lines \LaTeX{} will continue  this text without making it into a new paragraph.  Notice how there was no indentation in the text after equation (1).
 Also notice how even though I hit enter after that sentence and here $\downarrow$
-\LaTeX{} formats the sentence without any break.  Also   look  how      it   doesn't     matter          how    many  spaces     I put     between       my    words.
+
+% 下面演示交叉引用：使用 \label 定义标签，使用 \ref 或 \eqref 调用。
+参考公式~\eqref{eq:energy}~可知，质能可以互相转换。
+
+\section{交叉引用示例}
+我们再写一个勾股定理公式，并引用它：
+\begin{equation}
+  a^2 + b^2 = c^2 \label{eq:pythag}
+\end{equation}
+如公式~\eqref{eq:pythag}~所示，直角三角形两直角边平方和等于斜边平方。
+
+再引用一次上面的爱因斯坦公式：公式编号是~\ref{eq:energy}。使用 \\eqref 会自动加上括号，比如 \eqref{eq:energy}。
+
+让我自己引用一次我的爱因斯坦公式：公式编号是~\eqref{eq:energy}。
+让我自己引用一次我的爱因斯坦公式：公式编号是~\eqref{eq:energy}。
+
+常见导致出现 ?? 的原因：
+\begin{itemize}
+  \item 只编译了一次：需要至少运行两遍 (推荐使用 latexmk 自动多轮编译)。
+  \item 用了 \\cite 而不是 \\ref \\eqref : \\cite 是引用文献条目的，需要配合 bib 文件。
+  \item 标签拼写不一致，或复制时多/少了空格。
+  \item 标签放在不可编号的环境里（如普通段落）。
+  \item 删除了 .aux 但没重新完整编译。
+\end{itemize}
+
+本地建议编译命令(运行两遍或用 latexmk):
+% xelatex demo.tex
+% xelatex demo.tex
+% 或者：latexmk -xelatex demo.tex
+
+如果仍出现 ?? ，清理辅助文件再重新编译(不要删除源 .tex):
+% latexmk -C
+% latexmk -xelatex demo.tex
+
+\LaTeX{} formats the sentence without any break.  Also look how it doesn't matter how many spaces I put between my words.
 
 For a new essay I can leave a blank space in my code.
+
+For a new essay I can leave a blank space in my code.
+
+
 
 \end{document} % This is the end of the document
