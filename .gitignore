@@ -1,0 +1,53 @@
+# LaTeX auxiliary files
+*.aux
+*.log
+*.lof
+*.lot
+*.toc
+*.out
+*.out.*
+*.bbl
+*.blg
+*-blx.*
+*.run.xml
+
+# latexmk / build dependency info
+*.fdb_latexmk
+*.fls
+
+# SyncTeX
+*.synctex.gz
+*.synctex(busy)
+
+# Intermediate formats
+*.xdv
+*.dvi
+*.ps
+
+# Beamer
+*.nav
+*.snm
+*.vrb
+
+# Index / glossary
+*.idx
+*.ilg
+*.ind
+*.glo
+*.gls*
+*.acn
+*.acr
+*.alg
+*.ist
+
+# Minted / listings caches
+_minted*
+*.pyg
+
+# Other editor / tool caches
+*.bak
+*.swp
+*.DS_Store
+
+# Optional: ignore PDFs except release ones
+# *.pdf
