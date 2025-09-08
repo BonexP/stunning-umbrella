@@ -4,6 +4,9 @@
 \documentclass{ctexart} % \documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble
 
 \usepackage{amsmath} % \usepackage is a command that allows you to add functionality to your LaTeX code
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}  % scalable CM/Latin Modern fonts
+\usepackage{fix-cm}   % allow arbitrary scaling (reduces size substitution warnings
 
 \title{Simple Sample} % Sets article title
 \author{My Name} % Sets authors name
@@ -75,6 +78,27 @@ For a new essay I can leave a blank space in my code.
 
 For a new essay I can leave a blank space in my code.
 
+\section{Conclusion} % creates a new section\
+
+\subsection{Subsection} % creates a subsection
+\subsubsection{Subsubsection} % creates a subsubsection
+\begin{itemize}
+  \item 这是一个子项目。
+  \item 这是一个子子项目。
+
+\end{itemize}
+
+\[\begin{cases}
+  collaborate
+\end{cases} \]
+\[
+f(x) = \begin{cases} 
+x^2 & \text{如果 } x \geq 0 \\
+-x & \text{如果 } x < 0 
+\end{cases}
+\]
 
 
+edit together
+现在，
 \end{document} % This is the end of the document
