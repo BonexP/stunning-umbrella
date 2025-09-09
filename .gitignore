@@ -50,7 +50,7 @@ _minted*
 *.DS_Store
 
 # Optional: ignore PDFs except release ones
-# *.pdf
+*.pdf
 
 tmp-pdfcrop-13964.tex
 *.ini
