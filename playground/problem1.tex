@@ -1,0 +1,42 @@
+\section{对于问题一}
+五、模型的建立与求解
+5.1.1光的振动函数
+时间变化的规律可以通过正弦函数和余弦函数来表述，其数学表达式为：
+
+
+\subsection{问题一：平行平面薄膜双光束干涉的外延层厚度模型}
+
+基于红外干涉法的原理，我们考虑外延层与衬底界面仅发生一次反射和透射的情形（如图1所示），建立确定碳化硅外延层厚度 \( d \) 的数学模型。模型的核心是计算入射红外光在空气-外延层和外延层-衬底界面的反射光束之间的光程差，并利用干涉极值条件反推 \( d \)。
+
+\subsubsection{光程差与干涉条件}
+入射光以角度 \( \theta \) 进入外延层，折射角 \( \phi = \arcsin(\sin \theta / n) \)。两束反射光的光程差为
+\[
+    \delta = 2 n d \cos \phi,
+\]
+其中 \( n \) 是外延层的折射率，\( d \) 是厚度。考虑相移：空气-外延层界面有半波损失（相移 \( \pi \))，外延层-衬底无（折射率相近）。因此，反射干涉的相长条件（反射率最大）为
+\[
+    \delta = \left( m + \frac{1}{2} \right) \lambda, \quad m = 0, 1, 2, \dots,
+\]
+相消条件（反射率最小）为 \( \delta = m \lambda \)。
+
+\subsubsection{反射率计算}
+使用菲涅尔公式计算反射率 \( R \)。对于 s 偏振斜入射，反射系数 \( r_s = \frac{n \cos \phi - \cos \theta}{n \cos \phi + \cos \theta} \)，\( R = |r_s|^2 \)。类似地处理 p 偏振（假设非偏振光，取平均）。
+
+\subsubsection{厚度求解模型}
+从干涉条件，反推厚度
+\[
+    d = \frac{\left( m + \frac{1}{2} \right) \lambda}{2 n \cos \phi}.
+\]
+实际计算中，从反射谱 \( R(\nu) \) 提取极值波长 \( \lambda_k \)，拟合 m-k 关系，求 \( d \)。假设 \( n = 2.55 \)（常数），模型输入为 \( \nu, R, \theta \)，输出为 \( d \)（单位 μm）。
+
+\begin{table}[htbp]
+    \centering
+    \caption{符号说明（扩展自团队定义）}
+    \begin{tabular}{cccc}
+        \hline
+        符号   & 含义  & 单位       & 说明                              \\
+        \hline
+        \phi & 折射角 & ^{\circ} & \phi = \arcsin(\sin \theta / n) \\
+        \hline
+    \end{tabular}
+\end{table}
