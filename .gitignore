@@ -85,3 +85,7 @@ tmp-pdfcrop-13964.tex
 *.pdfsync
 Temp/*
 simkai.ttf
+
+# Pandoc installation temporary files
+/tmp/pandoc*
+/tmp/apt_*.log

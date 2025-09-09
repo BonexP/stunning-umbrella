@@ -253,6 +253,27 @@ And a lot [more](https://github.com/James-Yu/LaTeX-Workshop/wiki/ExtraFeatures).
 
 All of the features and configurations can be found [here](https://github.com/James-Yu/LaTeX-Workshop/wiki).
 
+## Installing Pandoc
+
+If you need to install Pandoc for document conversion, we've provided comprehensive installation guides:
+
+- **Quick Install**: Use our automated script: `./install_pandoc.sh`
+- **Detailed Guide**: See [PANDOC_INSTALLATION.md](PANDOC_INSTALLATION.md) for multiple installation methods
+- **GPG Issues**: If you encounter Debian GPG key errors, see [DEBIAN_GPG_FIX.md](DEBIAN_GPG_FIX.md)
+
+### Common Pandoc Use Cases in WebLaTeX
+
+```bash
+# Convert Markdown to PDF
+pandoc document.md -o document.pdf
+
+# Convert LaTeX to HTML  
+pandoc document.tex -o document.html
+
+# Convert with bibliography
+pandoc document.md --bibliography=refs.bib --csl=style.csl -o document.pdf
+```
+
 ## Contribution
 
 I am open to and request you to contribute to this project. You can just Create a new issue to let me know about your concern/requests or just send a pull request with your desired changes.

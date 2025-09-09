@@ -1,0 +1,144 @@
+% !TEX program = xelatex
+\documentclass{ctexart}
+
+\usepackage{amsmath,amssymb}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{hyperref}
+
+\title{problem-gpt5edition（整理版）}
+\author{ }
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{平行平面薄膜干涉}
+\subsection{问题设置与几何关系}
+在折射率为 \(n_1\) 的均匀介质中放置一层厚度为 \(d\) 的平行平面薄膜，其折射率为 \(n_2\)，并设 \(n_1<n_2\)。一束单色、平行入射的光 \(S\) 以入射角 \(\theta_1\) 入射到薄膜上表面。根据几何光学：
+\begin{itemize}
+    \item 一部分光在上表面（记为界面 \(M\)，即 1--2 界面）反射，形成反射光线 a；
+    \item 另一部分光折射进入薄膜，在下表面（记为界面 \(N\)，即 2--3 界面）反射后再次折射出薄膜，形成光线 b。
+\end{itemize}
+两束出射光 a 和 b 近似平行，经透镜 \(L\) 聚焦在同一像点 \(P\)。
+
+\subsection{相干性与光程差}
+光线 a 与 b 源自同一入射光分束，满足相干叠加条件。在成像系统中可作辅助线保证比较同一路径的等效光程。透镜不引入附加光程差，可将两束光在 \(P\) 点的相位差归结为薄膜中往返段与空气段的光程差，并叠加界面处可能发生的“半波损失”（即 \(\pi\) 的相位突变）。
+记薄膜内折射角为 \(\theta_2\)，斯涅尔定律为
+\[
+    n_1\sin\theta_1=n_2\sin\theta_2,\quad \cos\theta_2=\sqrt{1-\left(\frac{n_1}{n_2}\right)^2\sin^2\theta_1}.
+\]
+则反射方向（两反射光束）在像点 \(P\) 的等效光程差为
+\[
+    \delta_{\rm ref} \,=\, 2\,n_2\,d\,\cos\theta_2 \, + \, \frac{\lambda}{2},
+\]
+其中 \(\tfrac{\lambda}{2}\) 来自一次从疏到密（\(n_1\to n_2\)）界面反射引入的半波损失。用 \(\theta_1\) 消去 \(\theta_2\) 可写成
+\[
+    \delta_{\rm ref} \,=\, 2\,d\,\sqrt{\,n_2^2 - n_1^2\sin^2\theta_1\,}\; +\; \frac{\lambda}{2}.
+\]
+对于透射方向（两透射光束），反射过程不额外引入半波损失，其光程差为
+\[
+    \delta_{\rm tr} \,=\, 2\,n_2\,d\,\cos\theta_2 \,=\, 2\,d\,\sqrt{\,n_2^2 - n_1^2\sin^2\theta_1\,}.
+\]
+
+\subsection{垂直入射的特例}
+当 \(\theta_1=0\)（法向入射）时，\(\theta_2=0\)、\(\cos\theta_2=1\)，上式化为
+\[
+    \delta_{\rm ref}=2n_2d+\frac{\lambda}{2},\qquad \delta_{\rm tr}=2n_2d.
+\]
+
+\section{反射率与折射率（菲涅尔公式，重述版）}
+设三介质的折射率分别为：入射侧（空气）\(n_1\)、薄膜（外延层）\(n_2\)、衬底 \(n_3\)。入射角为 \(\theta_1\)，薄膜内折射角为 \(\theta_2\)，衬底内折射角为 \(\theta_3\)。斯涅尔定律分别为
+\[
+    n_1\sin\theta_1=n_2\sin\theta_2,\qquad n_2\sin\theta_2=n_3\sin\theta_3.
+\]
+\subsection{垂直入射（\(\theta_1=0^\circ\)）}
+1--2 界面反射率
+\[
+    R_{12}=\left(\frac{n_1-n_2}{n_1+n_2}\right)^2;\qquad
+    R_{23}=\left(\frac{n_2-n_3}{n_2+n_3}\right)^2.
+\]
+\subsection{斜入射（\(\theta_1>0^\circ\)），需按偏振分量区分}
+\paragraph{s 偏振（电矢量垂直入射面）}
+\[
+    R_{s,12}=\left(\frac{n_1\cos\theta_1 - n_2\cos\theta_2}{n_1\cos\theta_1 + n_2\cos\theta_2}\right)^2
+    =\left(\frac{n_1\cos\theta_1 - n_2\sqrt{1-(\tfrac{n_1}{n_2}\sin\theta_1)^2}}{n_1\cos\theta_1 + n_2\sqrt{1-(\tfrac{n_1}{n_2}\sin\theta_1)^2}}\right)^2,
+\]
+\[
+    R_{s,23}=\left(\frac{n_2\cos\theta_2 - n_3\cos\theta_3}{n_2\cos\theta_2 + n_3\cos\theta_3}\right)^2
+    =\left(\frac{n_2\cos\theta_2 - n_3\sqrt{1-(\tfrac{n_2}{n_3}\sin\theta_2)^2}}{n_2\cos\theta_2 + n_3\sqrt{1-(\tfrac{n_2}{n_3}\sin\theta_2)^2}}\right)^2.
+\]
+\paragraph{p 偏振（电矢量平行入射面）}
+\[
+    R_{p,12}=\left(\frac{n_1\cos\theta_2 - n_2\cos\theta_1}{n_1\cos\theta_2 + n_2\cos\theta_1}\right)^2
+    =\left(\frac{n_1\sqrt{1-(\tfrac{n_1}{n_2}\sin\theta_1)^2} - n_2\cos\theta_1}{n_1\sqrt{1-(\tfrac{n_1}{n_2}\sin\theta_1)^2} + n_2\cos\theta_1}\right)^2,
+\]
+\[
+    R_{p,23}=\left(\frac{n_2\cos\theta_3 - n_3\cos\theta_2}{n_2\cos\theta_3 + n_3\cos\theta_2}\right)^2
+    =\left(\frac{n_2\sqrt{1-(\tfrac{n_2}{n_3}\sin\theta_2)^2} - n_3\cos\theta_2}{n_2\sqrt{1-(\tfrac{n_2}{n_3}\sin\theta_2)^2} + n_3\cos\theta_2}\right)^2.
+\]
+
+\section{问题一的数学模型（整理并补充）}
+\subsection{基本量与约定}
+\begin{itemize}
+    \item 薄膜厚度：\(d\)（原文 \(e\)）。
+    \item 波数：\(\nu\)（cm\(^{-1}\)），与波长 \(\lambda\) 的关系为 \(\nu=1/\lambda\)、\(\lambda=1/\nu\)。
+    \item 入射角：\(\theta_1\in\{10^\circ,\,15^\circ\}\)。
+    \item 折射角：\(\theta_2\) 满足 \(n_1\sin\theta_1=n_2\sin\theta_2\)，且 \(\cos\theta_2=\sqrt{1-(\tfrac{n_1}{n_2})^2\sin^2\theta_1}\)。
+    \item 题设近似（同质外延）：在碳化硅样品上采用 \(n_2=n_3=2.55\) 常数近似（问题一的简化）。
+\end{itemize}
+\subsection{反射/透射的光程差}
+\[
+    \delta_{\rm ref}=2\,n_2\,d\,\cos\theta_2+\frac{\lambda}{2},\qquad
+    \delta_{\rm tr}=2\,n_2\,d\,\cos\theta_2.
+\]
+\subsection{干涉极值条件与“波数域”线性化}
+薄膜双光束干涉在反射方向的极值条件可统一写成 \(\delta_{\rm ref}=m\,\lambda\ (m\in\mathbb{Z})\)。代入 \(\delta_{\rm ref}\) 得
+\[
+    2\,n_2\,d\,\cos\theta_2 \,=\, \Big(m-\tfrac{1}{2}\Big)\lambda.
+\]
+两边同乘以 \(\nu=1/\lambda\)，得到“波数域”的线性关系
+\[
+    2\,n_2\,d\,\cos\theta_2\,\nu \,=\, m-\tfrac{1}{2}.
+\]
+可见，相邻同类型极值点（同为峰或同为谷）在波数轴上的间隔为常数
+\[
+    \Delta \nu \,=\, \nu_{k+1}-\nu_k \,=\, \frac{1}{2\,n_2\,d\,\cos\theta_2}.
+\]
+因而得到不依赖 \(m\) 的厚度计算公式
+\[
+    \boxed{\,d \,=\, \frac{1}{2\,n_2\,\cos\theta_2\,\Delta \nu}\,},\qquad
+    \cos\theta_2=\sqrt{1-\left(\frac{n_1}{n_2}\right)^2\sin^2\theta_1}.
+\]
+单位换算：若 \(\nu\) 用 cm\(^{-1}\)，则上式求得的 \(d\) 为 cm；换算为 \(\mu\)m：
+\[
+    \boxed{\,d_{\mu{\rm m}} \,=\, \frac{10^4}{2\,n_2\,\cos\theta_2\,\Delta \nu}\,}.
+\]
+注：对于透射方向，同理可得 \(2\,n_2\,d\,\cos\theta_2\,\nu=m\)，相邻极值的 \(\Delta\nu\) 仍满足同一厚度公式，因此用“相邻同类型极值的波数间隔”估计厚度在反射与透射两种读法下是一致的。
+
+\subsection{与反射率公式的衔接}
+上述厚度公式基于几何相位条件，与菲涅尔反射率 \(R\) 的作用是相互补充的：菲涅尔公式给出每个界面处的幅度反射/透射比例（决定条纹对比度与可见性），而条纹周期（从而 \(\Delta\nu\)）由相位项 \(2n_2 d \cos\theta_2\) 决定。问题一仅考虑一次反射/透射的双光束情形，利用极值间距即可稳健求 \(d\)。
+
+\section{可执行的厚度求解步骤}
+\begin{enumerate}
+    \item 已知参量与角度修正：设定 \(n_1=1.0\)（空气），取题设近似 \(n_2=2.55\)。由入射角 \(\theta_1 \in \{10^\circ, 15^\circ\}\) 计算
+          \[
+              \cos\theta_2=\sqrt{1-\left(\frac{n_1}{n_2}\right)^2\sin^2\theta_1}.
+          \]
+    \item 从反射率–波数曲线中取极值：对测得的 \((\nu, R)\) 光谱进行平滑与极值检测，得到一串相邻的“同类型”极值波数 \(\{\nu_k\}\)。
+    \item 求平均条纹间距：计算差分 \(\Delta \nu_k=\nu_{k+1}-\nu_k\)，对有效区间取加权或简单平均 \(\overline{\Delta\nu}\)（可去除异常值）。
+    \item 代入厚度公式：计算 \(d_{\mu{\rm m}}=\dfrac{10^4}{2\,n_2\,\cos\theta_2\,\overline{\Delta\nu}}\)。若有两组入射角数据，可分别计算后做一致性比较。
+\end{enumerate}
+
+\section{符号与单位说明（本段中出现的新记号）}
+\begin{itemize}
+    \item \(d\)：外延层厚度，cm 或 \(\mu\)m。
+    \item \(\lambda\)：波长，cm 或 \(\mu\)m。
+    \item \(\nu\)：波数，cm\(^{-1}\)，满足 \(\nu=1/\lambda\)。
+    \item \(\theta_1\)：入射角（在介质 \(n_1\) 中）。
+    \item \(\theta_2\)：薄膜内折射角，\(\cos\theta_2=\sqrt{1-(\tfrac{n_1}{n_2})^2\sin^2\theta_1}\)。
+    \item \(n_1,n_2,n_3\)：分别为空气、薄膜（外延层）、衬底的折射率。
+    \item \(\delta_{\rm ref},\delta_{\rm tr}\)：反射/透射两束干涉的光程差。
+    \item \(R_{(\cdot)}\)：各界面、各偏振分量的反射率。
+\end{itemize}
+
+\end{document}
