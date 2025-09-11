@@ -1,0 +1,160 @@
+% This is a simple sample document.  For more complicated documents take a look in the exercise tab. Note that everything that comes after a % symbol is treated as comment and ignored when the code is compiled.
+% !TEX program = xelatex
+
+\documentclass{ctexart} % \documentclass{} is the first command in any LaTeX code.  It is used to define what kind of document you are creating such as an article or a book, and begins the document preamble
+
+\usepackage{amsmath} % \usepackage is a command that allows you to add functionality to your LaTeX code
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}  % scalable CM/Latin Modern fonts
+\usepackage{fix-cm}   % allow arbitrary scaling (reduces size substitution warnings)
+\title{Simple Sample} % Sets article title
+\author{My Name} % Sets authors name
+\date{\today} % Sets date for date compiled
+
+% The preamble ends with the command \begin{document}
+\begin{document} % All begin commands must be paired with an end command somewhere
+\maketitle % creates title using information in preamble (title, author, date)
+LaTeX 完整章节（不含任何代码）。请直接复制到 CUMCM 模板中使用。
+\section{精确模型：多光束干涉与Airy公式}
+
+在问题一中，我们建立了基于双光束干涉的理想模型。然而，在实际物理情景中，光波会在外延层的上下两个界面（空气-外延层界面、外延层-衬底界面）之间发生多次反射和透射，形成多光束干涉，如图2所示。这种效应在特定条件下会变得十分显著，从而影响测量精度。本节旨在建立一个更精确的多光束干涉模型。
+
+我们考虑一个厚度为 $d$、折射率为 $n$ 的均匀外延层。设空气-外延层界面的振幅反射系数和透射系数分别为 $r_{01}$ 和 $t_{01}$，外延层-衬底界面的振幅反射系数为 $r_{12}$。当一束平面波入射时，总的反射光是无穷多束反射子波的相干叠加。
+
+第1束反射光的复振幅为 $E_1 = r_{01}E_0$。后续的反射光束需要进出外延层，相邻光束间的光程差为 $2nd\cos\varphi$，对应的相位差为：
+$$
+    \delta = \frac{2\pi}{\lambda} (2nd\cos\varphi) = 4\pi n d \nu \cos\varphi
+$$
+其中 $\nu$ 是波数，$\varphi$ 是在外延层内的折射角。
+
+通过对所有出射的反射光束的复振幅进行等比数列求和，并利用斯托克斯关系式进行化简，可以得到总的振幅反射系数 $\rho = E_R / E_0$ 为：
+$$
+    \rho = \frac{r_{01} + r_{12} e^{-i\delta}}{1 + r_{01} r_{12} e^{-i\delta}}
+$$
+我们最终测量的物理量是反射率 $R$，即反射光强与入射光强之比，它等于振幅反射系数的模的平方 $R = |\rho|^2$。经过推导，总反射率 $R$ 可以表示为著名的 \textbf{Airy 公式}：
+$$
+    R(\delta) = \frac{(r_{01} + r_{12})^2 - 4r_{01}r_{12}\sin^2(\delta/2)}{(1 + r_{01}r_{12})^2 - 4r_{01}r_{12}\sin^2(\delta/2)}
+$$
+为了更直观地理解干涉条纹的形状，上式通常被写为：
+$$
+    R = \frac{F \sin^2(\delta/2)}{1 + F \sin^2(\delta/2)}
+$$
+其中，$F$ 被称为 \textbf{精细度系数 (Coefficient of Finesse)}，它由界面的强度反射率 $R_1 = r_{01}^2$ 和 $R_2 = r_{12}^2$ 决定：
+$$
+    F = \frac{4\sqrt{R_1 R_2}}{(1-\sqrt{R_1 R_2})^2}
+$$
+精细度系数 $F$ 衡量了干涉条纹的锐利程度。当 $F$ 值较小（即界面反射率较低）时，Airy公式的行为近似于 $\sin^2$ 函数，对应于双光束干涉的宽缓条纹。当 $F$ 值较大（即界面反射率较高）时，干涉峰会变得非常尖锐，谷底平坦宽阔，这是多光束干涉的典型特征。这一模型为我们分析附件3和4中硅晶片的光谱，以及修正碳化硅光谱的计算精度提供了坚实的理论基础。
+
+\subsection{多光束干涉产生的必要条件}
+基于光波在薄膜内多次反射的物理图像（图2），要产生显著的多光束干涉效应，而非退化为双光束干涉，需满足以下必要条件：
+
+\begin{itemize}
+    \item \textbf{核心条件一：界面高反射率}。外延层-衬底界面的反射率 $R_{\text{int}}$（近似为 $R_{ns} = \left( \frac{n - n_s}{n + n_s} \right)^2$）必须足够高。若 $R_{\text{int}}$ 过低（经验值 $R_{\text{int}} \lesssim 0.1$），则二次以上反射光束的强度将呈指数级衰减（$\propto R_{\text{int}}^k$），其叠加贡献可忽略不计，系统退化为双光束干涉模型。反之，高 $R_{\text{int}}$ 值会显著提高干涉条纹的锐度（对比度），其影响可由 \textbf{精细度系数} $F = \frac{4R_{\text{int}}}{(1-R_{\text{int}})^2}$ 量化，$F$ 值越大，条纹越尖锐。
+
+    \item \textbf{核心条件二：薄膜低吸收率}。外延层材料对入射光波长的吸收系数 $\alpha$ 必须足够小，以确保光在多次往返传播过程中的强度衰减不明显。其定量条件为 $\alpha \cdot 2d \ll 1$。若吸收过强，高次反射光束的振幅将因损耗而急剧减弱（$\propto e^{-\alpha \cdot 2k d}$），同样导致多光束效应被抑制。
+\end{itemize}
+
+\noindent 此外，以下两个辅助条件对维持清晰、稳定的干涉图样至关重要：
+
+\begin{itemize}
+    \item \textbf{辅助条件一：界面平行与膜厚均匀}。外延层上下界面应近似平行，且膜厚 $d$ 及折射率 $n$ 在光斑区域内均匀一致。否则，不同位置产生的干涉条纹会发生叠加平均，导致整体条纹对比度下降甚至消失。
+
+    \item \textbf{辅助条件二：入射光相干性}。入射光需具有良好的时间与空间相干性，其相干长度 $L_c$ 应大于光在薄膜内的最大往返光程（即 $L_c \geq 2nd\cos\varphi$）。对于本题所用的傅里叶变换红外光谱（FTIR）技术，虽采用宽带光源，但在窄带干涉滤波下，仍可在特定波数处满足相干性要求，形成稳定的干涉条纹。
+\end{itemize}
+
+\noindent 在本问题中，硅（Si）与碳化硅（SiC）材料属性的差异直接决定了多光束干涉效应的显著性：
+\begin{itemize}
+    \item 对于\textbf{硅晶片}（附件3、4），外延层与衬底虽同为硅材料，但因掺杂浓度不同导致折射率存在差异，其界面反射率 $R_{\text{int}}^{\text{Si}}$ 较高（通常可达$0.2$以上），易满足核心条件一，故光谱呈现出尖锐的干涉峰（高精细度），多光束干涉效应显著。
+    \item 对于\textbf{碳化硅晶片}（附件1、2），外延层与衬底界面的折射率差较小，导致 $R_{\text{int}}^{\text{SiC}}$ 较低（约$0.05$量级），更接近双光束干涉条件，其干涉条纹较为平滑。但其吸收系数 $\alpha$ 在红外波段同样较低，满足核心条件二。
+\end{itemize}
+
+\subsection{硅外延层厚度的计算与分析}
+
+本节旨在根据多光束干涉理论，分析附件3和附件4中硅(Si)晶圆片的光谱特性，建立数学模型并设计算法，最终确定其外延层厚度。
+
+\subsubsection{模型与算法选择}
+
+在上一节中，我们通过定性分析确认了硅晶圆片光谱呈现出典型的多光束干涉特征。其核心数学描述是Airy公式。理论上，可以通过非线性最小二乘法对整个光谱进行Airy公式拟合来求解厚度 $d$。然而，该方法存在以下挑战：
+\begin{itemize}
+    \item \textbf{参数耦合与色散效应}：Airy公式中的折射率 $n$ 并非一个常数，而是随波数 $\nu$ 变化的函数（即色散效应）。这使得全局拟合的参数众多、高度耦合，极易陷入局部最优或不收敛，在竞赛有限时间内难以获得稳定可靠的结果。
+    \item \textbf{计算复杂度高}：非线性拟合过程计算量大，对初始参数的猜测非常敏感，调试过程耗时。
+\end{itemize}
+
+考虑到上述因素，并注意到一个关键事实：\textbf{无论是双光束干涉还是多光束干涉，干涉极大值（峰值）的位置均遵循相同的物理规律}。即干涉峰位满足：
+$$
+    2nd\cos\varphi = m\lambda \quad (m \text{为整数})
+$$
+这使得基于峰间距 $\overline{\Delta\nu}$ 的算法具有极好的普适性和稳健性。因此，我们选择该方法作为计算硅外延层厚度的主要算法，其不仅计算高效、结果稳定，而且已在问题二中得到验证。
+
+\subsubsection{数学模型与算法实现}
+
+我们的模型基于干涉极大值条件。对于相邻的两个干涉峰，其波数分别为 $\nu_k$ 和 $\nu_{k+1}$，对应的干涉级次相差1。由此可得：
+$$
+    2nd\cos\varphi \cdot (\nu_{k+1} - \nu_k) = 1
+$$
+假设在整个测量波段内，硅的折射率 $n$ 近似为常数，则峰间距 $\Delta\nu = \nu_{k+1} - \nu_k$ 也应为常数。厚度 $d$ 的计算公式为：
+$$
+    d (\mu\text{m}) = \frac{10^4}{2n\cos\varphi \cdot \overline{\Delta\nu}}
+$$
+其中，$\varphi$ 为外延层内的折射角，由斯涅尔定律 $\sin\theta = n\sin\varphi$ 决定。
+
+算法实现步骤如下：
+\begin{enumerate}
+    \item \textbf{参数确定}：通过查阅文献\cite{Green2008Silicon}，我们确定硅(Si)在近红外波段的折射率 $n_{\text{Si}}$ 近似为常数 $3.42$。
+    \item \textbf{数据读取与寻峰}：读取附件3和附件4的数据，使用\texttt{scipy.signal.find\_peaks}函数进行自动寻峰。由于硅光谱的峰形尖锐，我们设置了\texttt{prominence}参数以有效识别主峰，避免噪声干扰。
+    \item \textbf{峰间距计算与稳健估计}：计算所有相邻峰位之间的波数差 $\Delta\nu_k$。为消除潜在的异常值影响，我们采用IQR（四分位距）准则对 $\Delta\nu_k$ 集合进行筛选，仅保留位于 $[Q_1 - 1.5 \cdot \text{IQR}, Q_3 + 1.5 \cdot \text{IQR}]$ 区间内的数据点，然后计算其算术平均值，得到稳健的平均峰间距 $\overline{\Delta\nu}$。
+    \item \textbf{厚度计算}：将 $n_{\text{Si}}$、入射角 $\theta$（10°或15°）以及计算得到的 $\overline{\Delta\nu}$ 代入公式，分别计算两个角度下的外延层厚度 $d_{10}$ 和 $d_{15}$。
+\end{enumerate}
+
+\subsubsection{计算结果与分析}
+
+我们基于上述算法，使用Python编程实现，对附件3和附件4的数据进行计算。结果汇总于表\ref{tab:si_thickness_results}。
+
+\begin{table}[htbp]
+    \centering
+    \caption{硅(Si)外延层厚度计算结果}
+    \label{tab:si_thickness_results}
+    \begin{tabular}{ccccc}
+        \toprule
+        附件  & 入射角 $\theta$ ($^\circ$) & 寻得峰数 & 平均峰间距 $\overline{\Delta\nu}$ (cm$^{-1}$) & 计算厚度 $d$ ($\mu$m) \\
+        \midrule
+        附件3 & 10.0                    & 10   & 404.0137                                 & 3.6233            \\
+        附件4 & 15.0                    & 9    & 409.4979                                 & 3.5805            \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+从表\ref{tab:si_thickness_results}中可以看出，在10°和15°两种不同入射角下测得的数据，给出的计算结果高度一致。两者的相对差异为：
+$$
+    \varepsilon_d = \frac{|d_{10} - d_{15}|}{(d_{10} + d_{15})/2} = \frac{|3.6233 - 3.5805|}{(3.6233 + 3.5805)/2} \times 100\% \approx 1.19\%
+$$
+如此小的差异（远小于5\%）充分证明了我们所采用的模型和算法的\textbf{可靠性}与\textbf{稳健性}。综合两次测量结果，我们取其平均值作为硅外延层厚度的最终确定值：
+$$
+    d_{\text{Si}} = \frac{d_{10} + d_{15}}{2} = \frac{3.6233 + 3.5805}{2} \approx \textbf{3.6019} \, \mu\text{m}
+$$
+
+\subsubsection{关于Airy公式拟合法的讨论}
+尽管我们主要采用了峰间距法，但我们也对使用Airy公式进行非线性拟合的方法进行了探索。我们尝试对光谱中的单个、高质量的干涉峰进行局部拟合。这种方法虽然在理论上更为精确，但在实践中，由于模型对初始参数的高度敏感性以及实际材料色散效应的复杂性，拟合过程难以稳定收敛。这进一步凸显了在实际工程应用和快速测量场景中，峰间距算法作为一种高效、鲁棒方法的优越性。我们的分析表明，对于厚度测量这一核心目标，精确捕捉峰位比完美复现整个光谱曲线更为关键和有效。
+
+\subsubsection{基于Airy公式的进一步探讨}
+为深入探究多光束干涉模型并验证上述结果，我们尝试使用精确的Airy公式对孤立干涉峰进行局部非线性拟合。其模型为：
+$$
+    R(\nu) = A \cdot \frac{F \sin^2(\delta/2)}{1 + F \sin^2(\delta/2)} + C, \quad \text{其中} \quad \delta = 4\pi n d \nu \cos\varphi
+$$
+$d$ 和精细度系数 $F$ 为核心拟合参数，$A$ 和 $C$ 为调节振幅与基线的辅助参数。
+然而，在实际拟合过程中发现，该模型对参数的初始猜测极为敏感，且极易陷入局部最优解而难以收敛到一个物理上合理的解（例如，$F$ 值异常或 $d$ 值与峰间距法结果偏离甚远）。
+\textbf{我们分析认为，拟合困难的主要原因在于}：
+\begin{itemize}
+    \item \textbf{参数耦合性强}：厚度 $d$ 和系数 $F$ 高度耦合，轻微变动会导致 $\sin^2(\delta/2)$ 的周期性剧烈变化。
+    \item \textbf{色散效应}：Airy公式假设折射率 $n$ 为常数，但实际硅材料存在色散，即 $n$ 随波数 $\nu$ 变化，这使得模型在较宽波数范围内变得异常复杂。
+\end{itemize}
+鉴于竞赛时间的限制，追求一个全局最优的Airy公式拟合解风险高、效率低。因此，我们选择放弃这一路径。但本次尝试表明，\textbf{峰间距法尽管基于一个简单的物理条件，却因其稳健性而成为解决此类工程测量问题的更优选择}。这也从侧面说明，一个优秀的数学模型不仅在于其理论上的精确性，更在于其在实际应用中的可操作性和稳定性。
+
+\end{document}
+
