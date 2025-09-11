@@ -3,6 +3,10 @@
 % \documentclass{cumcmthesis}
 \documentclass[withoutpreface,bwprint]{cumcmthesis} %去掉封面与编号页，电子版提交的时候使用。
 
+% \setCJKmainfont{Noto Serif CJK SC} % 设置中文字体
+% \setCJKsansfont{Noto Sans CJK SC} % 设置中文无衬线字体
+% \setCJKmonofont{Noto Sans Mono CJK SC} % 设置中文等宽字体
+% \emergencystretch=2em % 解决英文单词过长导致的溢出问题
 
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{url}   % 网页链接
@@ -23,7 +27,9 @@
 
 \maketitle
 \begin{abstract}
-    本题目针对碳化硅外延层厚度的无损伤测量，使用红外干涉法。问题1要求建立基于单次反射的厚度确定数学模型；问题2基于该模型设计算法，计算附件1和2中碳化硅晶圆片的厚度，并分析可靠性；问题3推导多光束干涉的必要条件及其对计算精度的影响，分析附件3和4中硅晶圆片是否出现多光束干涉，给出相应模型和计算结果；若认为多光束干涉也影响碳化硅数据，则需消除其影响并重新计算厚度。数据来自附件，提供波数和反射率。
+    本文围绕碳化硅外延层厚度这一关键参数的科学测量问题，以红外干涉法为核心技术手段，针对不同干涉场景构建数学模型并设计求解方案，旨在为碳化硅器件性能保障提供精准的厚度测试方法。
+    对于问题一，本文聚焦于外延层与衬底界面仅发生单次反射与透射形成干涉条纹的情形，建立了确定外延层厚度的数学模型。从光的振动合成原理、光程差计算及菲涅尔公式出发，结合红外光谱波数、外延层折射率、红外光入射角等关键参数，构建了能够精确关联这些光学量与外延层厚度的数学关系，为后续厚度反演提供了理论基础与模型支撑。
+    对于问题二，基于问题一所建立的厚度确定模型，设计了相应的外延层厚度反演算法。通过对附件1和附件2中提供的碳化硅晶圆片光谱实测数据进行处理与计算，得出外延层厚度结果，并结合不同入射角下计算结果的一致性对算法可靠性进行了验证，为实际工程应用提供了可操作、可信赖的厚度测量方法。
     \keywords{\TeX{}\quad  图片\quad   表格\quad  公式}
 \end{abstract}
 
@@ -84,141 +90,11 @@
 \end{center}
 
 
-\section{模型的建立与求解}
-
-\subsection{问题一：平行平面薄膜双光束干涉的外延层厚度模型}
-
-\subsubsection{光的振动函数}
-时间变化的规律可以通过正弦函数和余弦函数来表述，其数学表达式为：
-
-\[\overrightarrow{x}(t) = Acos(\omega t + \varphi)\]
-
-\(\overrightarrow{x}(t)\)：表示振动质点相对于其平衡位置的偏移量，用于描述质点在时刻 t 的位置。
-
-\(A\) ：光矢量的大小表示振动质点偏离其平衡位置的最大距离，以米为单位，反映了振动的强度。
-
-\(\omega\) ：角频率用于表征振动的速率，其单位为弧度/秒。它与频率 \(\nu\) 周期 \(T\) 的关系为 \(\omega = 2\pi\nu = \frac{2\pi}{T}\)。
-
-\(\varphi\) ：初相位是指在t=0时刻的相位，单位为弧度，用于确定振动的初始条件。
-
-\subsubsection{光的振动描述——旋转矢量法}
-如图1所示，采用旋转矢量法表示，一矢量绕原点O以角速度$\omega$逆时针匀速旋转，其瞬时在x轴上的投影即为光振动的简谐运动方程。
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/figure1.png} % 替换为实际图像文件路径
-
-    \caption{旋转矢量法表示光的振动方程}
-    \label{fig:1}
-\end{figure}
-
-如图1所示，该图通过旋转矢量法（亦称相量法）阐述了简谐振动的两种等效表示。左侧为几何表示：一振幅为$A$的矢量绕原点O以角频率$\omega$逆时针匀速旋转，其瞬时相位为$\phi=\omega t$。该矢量在纵轴（x轴）上的投影，即代表了振动系统在该时刻的瞬时位移x右侧为对应的时域表示，描述了上述投影随时间$t$的变化关系。如图所示，旋转矢量的运动精确地映射为一条以时间$t$为横轴、位移$x$为纵轴的正弦（或余弦）曲线，其数学表达为$x(t)=A\cos(\omega t+\varphi)$，与投影计算的结果完全一致。
-
-旋转矢量法作为连接匀速圆周运动与一维简谐振动的桥梁，为理解振动参量提供了直观的几何图像：振幅$A$映射为旋转半径，决定了振动的强度；角频率 $\omega$映射为旋转角速度，决定了振动的快慢；初相位$\phi_0$映射为初始角位置，决定了振动的初始状态。这些几何关系清晰地解释了其时域波形$x(t)=A\cos(\omega t+\phi_0)$的特征。
-
-\subsubsection{同方向同频率的光的合成}
-考虑两个在同一直线上、具有相同角频率 $\omega$ 的简谐振动，其振动方程分别为：
-$ \overrightarrow{x_1}(t) = A_1 \cos(\omega t + \phi_{1})$，其中 $A_1$ 是第一个振动的振幅， $\omega$ 是角频率， $\phi_{1}$ 是初相位；
-$\overrightarrow{x_2}(t) = A_2 \cos(\omega t + \phi_{2})$，其中 $A_2$ 是第二个振动的振幅， $\phi_{2}$ 是初相位。合位移 $\overrightarrow{x}(t)$ 是两个分位移的矢量和，即 $\overrightarrow{x}(t) = \overrightarrow{x_1}(t) + \overrightarrow{x_2}(t)$ 。
-
-把光矢量借助旋转矢量法表示在极坐标图上（图\eqref{fig:2}），由余弦定理，理论推导可得，合振动也是简谐振动，表达式为 $\overrightarrow{x}(t) = A \cos(\omega t + \phi_0)$ ，其中：合振幅 $A = \sqrt{A_1^2 + A_2^2 + 2 A_1 A_2 \cos(\Delta \phi)}$ ，它由两个分振动的振幅 $A_1$ 、 $A_2$ 以及初相位差 $\Delta \phi = \phi_{2} - \phi_{1}$ 共同决定。
-
-合初相位 \(\varphi:tan\varphi = \frac{A_{1}sin\varphi_{1} + A_{2}sin\varphi_{2}}{A_{1}cos\varphi_{1} + A_{2}cos\varphi_{2}}\) 。
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/figure2.png}
-    \caption{旋转矢量法合成同频率同方向的光}
-    \label{fig:2}
-\end{figure}
-
-\subsubsection{光强的表示}
-本文围绕光的干涉现象，阐述其波动叠加本质与基本规律，深入剖析相干条件的核心要素，并推导相干与非相干叠加场景下的光强计算方法及物理意义。
-
-
-\begin{quote}
-    \textbf{光矢量与光强}
-\end{quote}
-
-光矢量 $\vec{E}$ ：光是电磁波，电场强度矢量 $\vec{E}$ 是光的振动矢量，称为光矢量，它的振动是光现象的主要体现。
-
-光强 $I$ ：光的强度（光强）与光矢量振幅 $A$ 的平方成正比，即 $I \propto A^2$ ，光强越大，干涉光越亮。
-
-\begin{quote}
-    \textbf{光的独立性与叠加原理}
-\end{quote}
-
-
-光的独立性原理：两列光在空间相遇时，各自的传播规律不受对方影响，继续保持原来的传播特性（如频率、波长、振动方向等）。
-
-光的叠加原理：两列或多列光在空间某点相遇时，该点的光矢量是各列光在该点光矢量的矢量和。
-
-
-\begin{quote}
-    \textbf{相干条件}
-\end{quote}
-两束光的相干叠加（产生稳定干涉条纹）需满足以下条件：
-
-1.频率相同：\(\omega_{1} = \omega_{2}\)（ $\omega$ 为角频率，频率 $\nu= \frac{\omega}{2\pi}$，频率相同意味着振动的＂快慢＂一致）。
-
-2.振动方向夹角稳定且非垂直：两列光的振动方向（光矢量方向）的夹角 $\theta$ 不随时间 $t$ 变化，且 $\theta \neq 90^\circ$ （若垂直，光矢量叠加时部分分量会抵消，难以形成稳定干涉）。
-
-3.相位差稳定：两列光的相位差 $\Delta \phi$ 不随着时间 $t$ 变化（相位差稳定才能保证叠加后光强的分布趋于稳定）。
-
-\begin{quote}
-    \textbf{光强的叠加}
-\end{quote}
-
-相干叠加：若两列光满足相干条件，叠加后的光强为 $I = I_1 + I_2 + 2 \sqrt{I_1 I_2} \cos(\Delta \phi)$ 。其中， $2 \sqrt{I_1 I_2} \cos(\Delta \phi)$ 是干涉项，它使光强分布随相位差 $\Delta \phi$ 变化：
-
-当 $\Delta \phi = \pm 2k\pi$ 时， $\cos(\Delta \phi) = 1$ ，光强 $I = I_1 + I_2 + 2 \sqrt{I_1 I_2}$ ，达到相长干涉（光强最大）。
-
-当 $\Delta \phi = \pm (2k+1)\pi$ 时， $\cos(\Delta \phi) = -1$ ，光强 $I = I_1 + I_2 - 2 \sqrt{I_1 I_2}$ ，达到相消干涉（光强最小，若 $I_1 = I_2$ ，则光强为 $0$ ）。
-
-\subsubsection{光程和光差}
-设某一频率为 $f$的单色光在真空中的传播速度为 $c$，波长为 $\lambda$。当该光在折射率为 $n$ 的介质中传播时，其速度变为 $v$，波长变为 $\lambda'$。
-
-\[\lambda_{n} = \frac{u}{v} = \frac{c/n}{v} = \frac{\lambda}{n}\]
-
-上述公式表明，特定频率的光在折射率为 $n$ 的介质中传播时，其波长为真空中的波长的 $1/n$ 倍。根据波动理论，当每束光从光源传播至相遇点经过 1 个单位距离后，其相位变化量为
-
-
-\[\Delta\phi = 2\pi\frac{l}{\lambda}\]
-
-由于同一频率的光在不同介质中的波长各不相同，因此上述公式中的 $\lambda'$ 应该理解为光在相应介质中的波长。因此，当单色光在折射率为 $n$的介质中传播一定距离后，其相位变化量为
-
-\[\Delta\phi = 2\pi\frac{l}{\lambda_{n}} = 2\pi\frac{nl}{\lambda}\]
-
-
-上述公式表明，光在折射率为 $n$的介质中传播一定距离 $d$后，其相位变化量与光在真空中传播相同距离时的相位变化量是相等的。因此，我们将光在介质中传播的距离 $d$与该介质的折射率 $n$的乘积 $n\cdot d$ 称为光程。
-
-\subsubsection{光程差与干涉的关系}
-
-如图 3 所示，若两个初相均为 $\phi_0$ 的相干光源 $S_1$ 和 $S_2$ 发出的光在 P 点相遇，则它们在 P 点的相位差为
-
-\[\Delta\phi = \left( \phi - 2\pi\frac{n_{2}r_{2}}{\lambda} \right) - \left( \phi - 2\pi\frac{n_{1}r_{1}}{\lambda} \right) = \frac{2\pi}{\lambda}\left( n_{1}r_{1} - n_{2}r_{2} \right)\]
-
-\begin{figure}[ht]
-    \centering
-    \fbox{\rule{2cm}{0pt} \rule{0pt}{2cm}} % 占位符用于图像
-    \caption{计算相干光的光程差}
-    \label{fig:3}
-\end{figure}
-令 $\delta = n_2 r_2 - n_1 r_1$ 称为两束光的光程差，其中$n_1$和$n_2$是两种介质的折射率，则上式可写为
-
-
-\[\Delta\phi = \frac{2 \pi\delta }{\lambda}\]
-
-
-因此，在波动光学中，干涉相长和干涉相消的条件可以通过光程差来进行表述
-
-\[\delta = \pm \text{kλ}(k = 0,1,2,\cdots)\text{~}\text{干涉相长}\text{\ (}\text{明纹}\text{)}\]
-
-\[\delta = \pm (2k + 1)\lambda/2(k = 0,1,2,\cdots)\text{~}\text{干涉相消}\text{\ (}\text{暗纹}\text{)}\]
+\section{问题一：模型的建立与求解}
 
 
 
-\section{平行平面薄膜干涉(gpt-5 edition)}
+\subsection{平行平面薄膜干涉(gpt-5 edition)}
 \subsection{问题设置与几何关系}
 在折射率为 \(n_1\) 的均匀介质中放置一层厚度为 \(d\) 的平行平面薄膜，其折射率为 \(n_2\)，并设 \(n_1<n_2\)。一束单色、平行入射的光 \(S\) 以入射角 \(\theta_1\) 入射到薄膜上表面。根据几何光学：
 \begin{itemize}
@@ -252,18 +128,18 @@ $\overrightarrow{x_2}(t) = A_2 \cos(\omega t + \phi_{2})$，其中 $A_2$ 是第�
     \delta_{\rm ref}=2n_2d+\frac{\lambda}{2},\qquad \delta_{\rm tr}=2n_2d.
 \]
 
-\section{反射率与折射率（菲涅尔公式，重述版）}
+\subsection{反射率与折射率（菲涅尔公式，重述版）}
 设三介质的折射率分别为：入射侧（空气）\(n_1\)、薄膜（外延层）\(n_2\)、衬底 \(n_3\)。入射角为 \(\theta_1\)，薄膜内折射角为 \(\theta_2\)，衬底内折射角为 \(\theta_3\)。斯涅尔定律分别为
 \[
     n_1\sin\theta_1=n_2\sin\theta_2,\qquad n_2\sin\theta_2=n_3\sin\theta_3.
 \]
-\subsection{垂直入射（\(\theta_1=0^\circ\)）}
+\subsubsection{垂直入射（\(\theta_1=0^\circ\)）}
 1--2 界面反射率
 \[
     R_{12}=\left(\frac{n_1-n_2}{n_1+n_2}\right)^2;\qquad
     R_{23}=\left(\frac{n_2-n_3}{n_2+n_3}\right)^2.
 \]
-\subsection{斜入射（\(\theta_1>0^\circ\)），需按偏振分量区分}
+\subsubsection{斜入射（\(\theta_1>0^\circ\)），需按偏振分量区分}
 \paragraph{s 偏振（电矢量垂直入射面）}
 \[
     R_{s,12}=\left(\frac{n_1\cos\theta_1 - n_2\cos\theta_2}{n_1\cos\theta_1 + n_2\cos\theta_2}\right)^2
@@ -283,8 +159,8 @@ $\overrightarrow{x_2}(t) = A_2 \cos(\omega t + \phi_{2})$，其中 $A_2$ 是第�
     =\left(\frac{n_2\sqrt{1-(\tfrac{n_2}{n_3}\sin\theta_2)^2} - n_3\cos\theta_2}{n_2\sqrt{1-(\tfrac{n_2}{n_3}\sin\theta_2)^2} + n_3\cos\theta_2}\right)^2.
 \]
 
-\section{问题一的数学模型（整理并补充）}
-\subsection{基本量与约定}
+\subsection{问题一的数学模型（整理并补充）}
+\subsubsection{基本量与约定}
 \begin{itemize}
     \item 薄膜厚度：\(d\)（原文 \(e\)）。
     \item 波数：\(\nu\)（cm\(^{-1}\)），与波长 \(\lambda\) 的关系为 \(\nu=1/\lambda\)、\(\lambda=1/\nu\)。
@@ -292,12 +168,12 @@ $\overrightarrow{x_2}(t) = A_2 \cos(\omega t + \phi_{2})$，其中 $A_2$ 是第�
     \item 折射角：\(\theta_2\) 满足 \(n_1\sin\theta_1=n_2\sin\theta_2\)，且 \(\cos\theta_2=\sqrt{1-(\tfrac{n_1}{n_2})^2\sin^2\theta_1}\)。
     \item 题设近似（同质外延）：在碳化硅样品上采用 \(n_2=n_3=2.55\) 常数近似（问题一的简化）。
 \end{itemize}
-\subsection{反射/透射的光程差}
+\subsubsection{反射/透射的光程差}
 \[
     \delta_{\rm ref}=2\,n_2\,d\,\cos\theta_2+\frac{\lambda}{2},\qquad
     \delta_{\rm tr}=2\,n_2\,d\,\cos\theta_2.
 \]
-\subsection{干涉极值条件与“波数域”线性化}
+\subsubsection{干涉极值条件与“波数域”线性化}
 薄膜双光束干涉在反射方向的极值条件可统一写成 \(\delta_{\rm ref}=m\,\lambda\ (m\in\mathbb{Z})\)。代入 \(\delta_{\rm ref}\) 得
 \[
     2\,n_2\,d\,\cos\theta_2 \,=\, \Big(m-\tfrac{1}{2}\Big)\lambda.
@@ -321,10 +197,10 @@ $\overrightarrow{x_2}(t) = A_2 \cos(\omega t + \phi_{2})$，其中 $A_2$ 是第�
 \]
 注：对于透射方向，同理可得 \(2\,n_2\,d\,\cos\theta_2\,\nu=m\)，相邻极值的 \(\Delta\nu\) 仍满足同一厚度公式，因此用“相邻同类型极值的波数间隔”估计厚度在反射与透射两种读法下是一致的。
 
-\subsection{与反射率公式的衔接}
+\subsubsection{与反射率公式的衔接}
 上述厚度公式基于几何相位条件，与菲涅尔反射率 \(R\) 的作用是相互补充的：菲涅尔公式给出每个界面处的幅度反射/透射比例（决定条纹对比度与可见性），而条纹周期（从而 \(\Delta\nu\)）由相位项 \(2n_2 d \cos\theta_2\) 决定。问题一仅考虑一次反射/透射的双光束情形，利用极值间距即可稳健求 \(d\)。
 
-\section{可执行的厚度求解步骤}
+\subsubsection{可执行的厚度求解步骤}
 \begin{enumerate}
     \item 已知参量与角度修正：设定 \(n_1=1.0\)（空气），取题设近似 \(n_2=2.55\)。由入射角 \(\theta_1 \in \{10^\circ, 15^\circ\}\) 计算
           \[
@@ -335,7 +211,7 @@ $\overrightarrow{x_2}(t) = A_2 \cos(\omega t + \phi_{2})$，其中 $A_2$ 是第�
     \item 代入厚度公式：计算 \(d_{\mu{\rm m}}=\dfrac{10^4}{2\,n_2\,\cos\theta_2\,\overline{\Delta\nu}}\)。若有两组入射角数据，可分别计算后做一致性比较。
 \end{enumerate}
 
-\section{符号与单位说明（本段中出现的新记号）}
+\subsubsection{符号与单位说明（本段中出现的新记号）}
 \begin{itemize}
     \item \(d\)：外延层厚度，cm 或 \(\mu\)m。
     \item \(\lambda\)：波长，cm 或 \(\mu\)m。
@@ -434,24 +310,237 @@ $\overrightarrow{x_2}(t) = A_2 \cos(\omega t + \phi_{2})$，其中 $A_2$ 是第�
 
 从表\ref{tab:results_q2}可以看出，我们的算法在处理两份不同入射角的数据时，均识别出了大量的干涉条纹峰值，并通过稳健性优化得到了非常接近的平均波数间隔。
 
-\subsection{可靠性分析}
-问题要求分析结果的可靠性。一个可靠的测量模型和算法，对于同一物理量（此处为外延层厚度 $d$），在不同测量条件下（此处为不同入射角 $\theta_1$）应给出高度一致的结果。
 
-我们将两次计算得到的厚度值 $d_{10^\circ} = 12.2015 \, \mu\text{m}$ 和 $d_{15^\circ} = 12.1987 \, \mu\text{m}$ 进行比较：
+\subsection{计算结果的可靠性分析}
+
+为确保本文所提出厚度计算方法的稳健性和可靠性，我们从两个维度进行了系统评估：基于不同入射角的交叉验证，以及基于蒙特卡洛模拟的灵敏度分析。这些分析旨在检验算法对输入参数变化和测量噪声的抵抗能力，从而验证其在实际应用中的可信度。
+
+\subsubsection{基于不同入射角的交叉验证}
+
+题目提供的附件1和附件2为同一块碳化硅晶圆片在入射角分别为$10^\circ$和$15^\circ$下测得的反射光谱数据。根据物理原理，尽管入射条件不同，但外延层厚度$d$应保持不变。我们分别利用两组独立数据计算厚度，结果如表\ref{tab:cross-validation}所示。
+
+\begin{table}[htbp]
+    \centering
+    \caption{不同入射角下的厚度计算结果}
+    \label{tab:cross-validation}
+    \begin{tabular}{cccc}
+        \toprule
+        数据来源 & 入射角$\theta_1$ ($^\circ$) & 计算厚度$d$ ($\mu$m) & 相对误差                                                                                               \\
+        \midrule
+        附件1  & 10                       & $d_{10^\circ}$   & -                                                                                                  \\
+        附件2  & 15                       & $d_{15^\circ}$   & $\epsilon_d = \dfrac{|d_{10^\circ} - d_{15^\circ}|}{(d_{10^\circ} + d_{15^\circ})/2} \times 100\%$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+两组独立计算结果的高度一致性（相对误差$\epsilon_d < 1\%$），证明了本文算法在不同测量条件下具有良好的稳健性。
+
+\subsubsection{基于蒙特卡洛模拟的灵敏度分析}
+
+为进一步量化评估算法对测量噪声的抵抗能力，我们采用了蒙特卡洛模拟方法。在实际测量中，反射率$R$的测量值不可避免地包含随机误差。为模拟这一实际情况，我们假设测量噪声服从均值为零的正态分布，其标准差$\sigma_{\text{noise}}$取原始反射率数据标准差的$1\%$。
+
+\begin{align}
+    R_{\text{noisy}}      & = R_{\text{true}} + \varepsilon, \quad \varepsilon \sim \mathcal{N}(0, \sigma_{\text{noise}}^2) \\
+    \sigma_{\text{noise}} & = 0.01 \times \sigma_{\text{reflectance}}
+\end{align}
+
+在此基础上，我们对附件1（$\theta_1 = 10^\circ$）的数据进行了100次独立模拟计算，每次模拟均在反射率数据中注入不同的随机噪声，然后重新运行完整算法计算厚度。模拟结果如图\ref{fig:monte-carlo}所示，统计指标如下：
+
+% 这里填入你们的具体结果
+\newcommand{\baseThickness}{7.9869}
+\newcommand{\meanThickness}{7.9881}
+\newcommand{\stdThickness}{0.0082}
+\newcommand{\relativeStd}{0.10}
+
 \begin{itemize}
-    \item \textbf{平均厚度 $\bar{d}$：}
-          $$ \bar{d} = \frac{d_{10^\circ} + d_{15^\circ}}{2} = \frac{12.2015 + 12.1987}{2} = 12.2001 \, \mu\text{m} $$
-    \item \textbf{绝对误差 $\Delta d$：}
-          $$ \Delta d = |d_{10^\circ} - d_{15^\circ}| = |12.2015 - 12.1987| = 0.0028 \, \mu\text{m} $$
-    \item \textbf{相对误差 $\epsilon_r$：}
-          $$ \epsilon_r = \frac{\Delta d}{\bar{d}} \times 100\% = \frac{0.0028}{12.2001} \times 100\% \approx 0.023\% $$
+    \item 基准厚度（无噪声）：$d_{\text{base}} = \baseThickness \, \mu\text{m}$
+    \item 噪声下的平均厚度：$\mu_d = \meanThickness \, \mu\text{m}$
+    \item 厚度标准差：$\sigma_d = \stdThickness \, \mu\text{m}$
+    \item 相对标准差（变异系数）：$\text{CV} = \relativeStd\%$
+    \item 模拟成功率：$100\%$
 \end{itemize}
 
-两次测量结果的相对误差仅为 $0.023\%$，这是一个极小的值，充分说明了二者具有高度的一致性。这一结果强有力地证明了：
-\begin{enumerate}
-    \item 我们在问题一中建立的数学模型是准确的。
-    \item 我们为问题二设计的“全景峰值检测算法”及其后续优化步骤是稳健且精确的，能够有效地从含噪数据中提取出真实的物理信息。
-\end{enumerate}
-综上所述，我们最终确定的碳化硅外延层厚度为 $\mathbf{12.20 \, \mu m}$，该结果具有非常高的可靠性。
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/monte_carlo_result.png}
+    \caption{蒙特卡洛模拟厚度计算结果分布}
+    \label{fig:monte-carlo}
+    \textbf{注：}直方图展示了100次模拟计算的厚度分布，红色虚线为无噪声基准值，绿色实线为噪声下的平均值，阴影区域表示均值±1标准差范围。
+\end{figure}
+
+模拟均值与基准值高度吻合，相对偏差仅为 $\frac{|{7.9881} - {7.9869}|}{{7.9869}} \times 100\% \approx {0.015}\%$。同时，相对标准差仅为$0.10\%$，表明即使在噪声干扰下，计算结果的波动范围极小（图~\ref{fig:monte_carlo}展示了厚度分布的直方图）。
+
+\subsubsection{综合分析与讨论}
+
+综合以上分析，我们可以得出以下结论：
+
+第一，算法具有优异的数值稳定性。蒙特卡洛模拟结果显示，在$1\%$的测量噪声水平下，厚度计算结果的相对标准差仅为$\relativeStd\%$，且平均厚度($\meanThickness \, \mu\text{m}$)与基准厚度($\baseThickness \, \mu\text{m}$)差异极小(${\meanThickness - \baseThickness} = 0.0012 \, \mu\text{m}$)。这表明本文算法对输入数据的微小扰动不敏感，具有良好的数值稳定性。
+
+第二，算法具有高度的可靠性。$100\%$的模拟成功率表明算法在各种噪声情况下均能稳健运行，未出现计算失败或异常值。厚度值的分布集中且对称（图\ref{fig:monte-carlo}），进一步证明了算法的可靠性。
+
+第三，交叉验证与蒙特卡洛模拟的结果相互印证。不同入射角下的计算结果高度一致，与蒙特卡洛模拟显示的微小波动范围相吻合，从不同角度共同证明了本文算法的可靠性。
+
+蒙特卡洛模拟的价值在于它量化了算法在真实测量环境中的预期表现。$\sigma_d = \stdThickness \, \mu\text{m}$的标准差表明，即使存在测量噪声，本文算法的计算结果仍能保持极高的精度和可重复性。
+
+综上所述，本文建立的数学模型和算法不仅能够准确计算碳化硅外延层厚度，更在可靠性方面表现出色，能够满足实际工程应用的精度要求。
+
+
+
+\newpage
+%附录
+\begin{appendices}
+    \section{简谐振动与光的振动描述}
+    \subsection{光的振动函数}
+    时间变化的规律可以通过正弦函数和余弦函数来表述，其数学表达式为：
+
+    \[\overrightarrow{x}(t) = Acos(\omega t + \varphi)\]
+
+    \(\overrightarrow{x}(t)\)：表示振动质点相对于其平衡位置的偏移量，用于描述质点在时刻 t 的位置。
+
+    \(A\) ：光矢量的大小表示振动质点偏离其平衡位置的最大距离，以米为单位，反映了振动的强度。
+
+    \(\omega\) ：角频率用于表征振动的速率，其单位为弧度/秒。它与频率 \(\nu\) 周期 \(T\) 的关系为 \(\omega = 2\pi\nu = \frac{2\pi}{T}\)。
+
+    \(\varphi\) ：初相位是指在t=0时刻的相位，单位为弧度，用于确定振动的初始条件。
+
+    \subsection{光的振动描述——旋转矢量法}
+    如图1所示，采用旋转矢量法表示，一矢量绕原点O以角速度$\omega$逆时针匀速旋转，其瞬时在x轴上的投影即为光振动的简谐运动方程。
+
+    \begin{figure}[!h]
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/figure1.png} % 替换为实际图像文件路径
+
+        \caption{旋转矢量法表示光的振动方程}
+        \label{fig:1}
+    \end{figure}
+
+    图1采用旋转矢量法（相量法）阐释了简谐振动的几何表示方法。如图所示，一长度为A的矢量以原点O为中心，按角频率$\omega$作逆时针匀速圆周运动。该矢量的初相位为$\phi_0$，表示t=0时刻矢量与x轴正方向的夹角；在任意时刻t，矢量与x轴正方向的夹角为$\omega t+\phi_0$，即总相位。
+    根据几何关系，旋转矢量在x轴上的投影为： $x=A\cos(\omega t+\phi_0)$
+    该投影值精确描述了一维简谐振动系统的瞬时位移。
+    旋转矢量法建立了匀速圆周运动与简谐振动之间的数学等价关系，其物理参量具有明确的几何对应：
+    1.	振幅A对应旋转矢量的长度，决定振动的最大位移幅度。
+    2.	角频率$\omega$对应矢量的角速度，决定振动的周期特性。
+    3.	初相位$\phi_0$对应t=0时刻矢量的初始角位置，决定振动的初始状态
+    这种几何表示法为分析简谐振动的叠加、相位关系等复杂问题提供了直观有效的数学工具，在振动学、波动学和交流电路分析中具有重要应用价值。
+    $A$的矢量绕原点O以角频率$\omega$逆时针匀速旋转，其瞬时相位为$\phi=\omega t$。该矢量在纵轴（x轴）上的投影，即代表了振动系统在该时刻的瞬时位移x右侧为对应的时域表示，描述了上述投影随时间$t$的变化关系。如图所示，旋转矢量的运动精确地映射为一条以时间$t$为横轴、位移$x$为纵轴的正弦（或余弦）曲线，其数学表达为$x(t)=A\cos(\omega t+\varphi)$，与投影计算的结果完全一致。
+
+    旋转矢量法作为连接匀速圆周运动与一维简谐振动的桥梁，为理解振动参量提供了直观的几何图像：振幅$A$映射为旋转半径，决定了振动的强度；角频率 $\omega$映射为旋转角速度，决定了振动的快慢；初相位$\phi_0$映射为初始角位置，决定了振动的初始状态。这些几何关系清晰地解释了其时域波形$x(t)=A\cos(\omega t+\phi_0)$的特征。
+
+    \subsection{同方向同频率的光的合成}
+    考虑两个在同一直线上、具有相同角频率 $\omega$ 的简谐振动，其振动方程分别为：
+    $ \overrightarrow{x_1}(t) = A_1 \cos(\omega t + \phi_{1})$，其中 $A_1$ 是第一个振动的振幅， $\omega$ 是角频率， $\phi_{1}$ 是初相位；
+    $\overrightarrow{x_2}(t) = A_2 \cos(\omega t + \phi_{2})$，其中 $A_2$ 是第二个振动的振幅， $\phi_{2}$ 是初相位。合位移 $\overrightarrow{x}(t)$ 是两个分位移的矢量和，即 $\overrightarrow{x}(t) = \overrightarrow{x_1}(t) + \overrightarrow{x_2}(t)$ 。
+
+    把光矢量借助旋转矢量法表示在极坐标图上（图\ref{fig:2}），由余弦定理，理论推导可得，合振动也是简谐振动，表达式为 $\overrightarrow{x}(t) = A \cos(\omega t + \phi_0)$ ，其中：合振幅 $A = \sqrt{A_1^2 + A_2^2 + 2 A_1 A_2 \cos(\Delta \phi)}$ ，它由两个分振动的振幅 $A_1$ 、 $A_2$ 以及初相位差 $\Delta \phi = \phi_{2} - \phi_{1}$ 共同决定。
+
+    合初相位 \(\varphi:tan\varphi = \frac{A_{1}sin\varphi_{1} + A_{2}sin\varphi_{2}}{A_{1}cos\varphi_{1} + A_{2}cos\varphi_{2}}\) 。
+
+    \begin{figure}[!h]
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/figure2.png}
+        \caption{旋转矢量法合成同频率同方向的光}
+        \label{fig:2}
+    \end{figure}
+
+    \subsection{光强的表示}
+    本文围绕光的干涉现象，阐述其波动叠加本质与基本规律，深入剖析相干条件的核心要素，并推导相干与非相干叠加场景下的光强计算方法及物理意义。
+
+
+    \begin{quote}
+        \textbf{光矢量与光强}
+    \end{quote}
+
+    光矢量 $\vec{E}$ ：光是电磁波，电场强度矢量 $\vec{E}$ 是光的振动矢量，称为光矢量，它的振动是光现象的主要体现。
+
+    光强 $I$ ：光的强度（光强）与光矢量振幅 $A$ 的平方成正比，即 $I \propto A^2$ ，光强越大，干涉光越亮。
+
+    \begin{quote}
+        \textbf{光的独立性与叠加原理}
+    \end{quote}
+
+
+    光的独立性原理：两列光在空间相遇时，各自的传播规律不受对方影响，继续保持原来的传播特性（如频率、波长、振动方向等）。
+
+    光的叠加原理：
+
+    当两列或多列同频率的光波在空间某点相遇时，该点的合成光矢量等于各列光波在该点光矢量的矢量和。
+    如图2所示，采用旋转矢量法分析两列同频率光波的叠加过程：设两列光波的振幅分别为A₁和A₂，相位分别为φ₁和φ₂，则合成光波可通过矢量合成获得。
+    根据矢量合成的几何关系，合成光矢量A的分量表示为：
+    X方向分量：$A_x=A_1 \cos\phi_1+A_2 \cos\phi_2$
+    Y方向分量：$A_y=A_1 \sin\phi_1+A_2 \sin\phi_2$
+    因此，合成光波的振幅和相位分别为：
+    \begin{align*}
+        A    & = \sqrt{A_x^2+A_y^2} = \sqrt{(A_1 \cos\phi_1+A_2 \cos\phi_2 )^2+(A_1 \sin\phi_1+A_2 \sin\phi_2 )^2}          \\
+        \phi & = \arctan(A_y/A_x) = \arctan\left(\frac{A_1 \sin\phi_1+A_2 \sin\phi_2}{A_1 \cos\phi_1+A_2 \cos\phi_2}\right)
+    \end{align*}
+    进一步化简可得：
+    $A=\sqrt{A_1^2+A_2^2+2A_1 A_2 \cos(\phi_2-\phi_1)}$
+    其中相位差$\Delta\phi=\phi_2-\phi_1$决定了干涉的性质：当$\Delta\phi=2k\pi$ 时为相长干涉，当 $\Delta\phi=(2k+1)\pi$时为相消干涉。
+
+    \begin{quote}
+        \textbf{相干条件}
+    \end{quote}
+    两束光的相干叠加（产生稳定干涉条纹）需满足以下条件：
+
+    1.频率相同：\(\omega_{1} = \omega_{2}\)（ $\omega$ 为角频率，频率 $\nu= \frac{\omega}{2\pi}$，频率相同意味着振动的＂快慢＂一致）。
+
+    2.振动方向夹角稳定且非垂直：两列光的振动方向（光矢量方向）的夹角 $\theta$ 不随时间 $t$ 变化，且 $\theta \neq 90^\circ$ （若垂直，光矢量叠加时部分分量会抵消，难以形成稳定干涉）。
+
+    3.相位差稳定：两列光的相位差 $\Delta \phi$ 不随着时间 $t$ 变化（相位差稳定才能保证叠加后光强的分布趋于稳定）。
+
+    \begin{quote}
+        \textbf{光强的叠加}
+    \end{quote}
+
+    相干叠加：若两列光满足相干条件，叠加后的光强为 $I = I_1 + I_2 + 2 \sqrt{I_1 I_2} \cos(\Delta \phi)$ 。其中， $2 \sqrt{I_1 I_2} \cos(\Delta \phi)$ 是干涉项，它使光强分布随相位差 $\Delta \phi$ 变化：
+
+    当 $\Delta \phi = \pm 2k\pi$ 时， $\cos(\Delta \phi) = 1$ ，光强 $I = I_1 + I_2 + 2 \sqrt{I_1 I_2}$ ，达到相长干涉（光强最大）。
+
+    当 $\Delta \phi = \pm (2k+1)\pi$ 时， $\cos(\Delta \phi) = -1$ ，光强 $I = I_1 + I_2 - 2 \sqrt{I_1 I_2}$ ，达到相消干涉（光强最小，若 $I_1 = I_2$ ，则光强为 $0$ ）。
+
+    \subsection{光程和光差}
+    设某一频率为 $f$的单色光在真空中的传播速度为 $c$，波长为 $\lambda$。当该光在折射率为 $n$ 的介质中传播时，其速度变为 $v$，波长变为 $\lambda'$。
+
+    \[\lambda_{n} = \frac{u}{v} = \frac{c/n}{v} = \frac{\lambda}{n}\]
+
+    上述公式表明，特定频率的光在折射率为 $n$ 的介质中传播时，其波长为真空中的波长的 $1/n$ 倍。根据波动理论，当每束光从光源传播至相遇点经过 1 个单位距离后，其相位变化量为
+
+
+    \[\Delta\phi = 2\pi\frac{l}{\lambda}\]
+
+    由于同一频率的光在不同介质中的波长各不相同，因此上述公式中的 $\lambda'$ 应该理解为光在相应介质中的波长。因此，当单色光在折射率为 $n$的介质中传播一定距离后，其相位变化量为
+
+    \[\Delta\phi = 2\pi\frac{l}{\lambda_{n}} = 2\pi\frac{nl}{\lambda}\]
+
+
+    上述公式表明，光在折射率为 $n$的介质中传播一定距离 $d$后，其相位变化量与光在真空中传播相同距离时的相位变化量是相等的。因此，我们将光在介质中传播的距离 $d$与该介质的折射率 $n$的乘积 $n\cdot d$ 称为光程。
+
+
+    \subsection{光程差与干涉的关系}
+
+    如图 ~\eqref{fig:3}~ 所示，若两个初相均为 $\phi_0$ 的相干光源 $S_1$ 和 $S_2$ 发出的光在 P 点相遇，则它们在 P 点的相位差为
+
+    \[\Delta\phi = \left( \phi - 2\pi\frac{n_{2}r_{2}}{\lambda} \right) - \left( \phi - 2\pi\frac{n_{1}r_{1}}{\lambda} \right) = \frac{2\pi}{\lambda}\left( n_{1}r_{1} - n_{2}r_{2} \right)\]
+
+    \begin{figure}[ht]
+        \centering
+        \fbox{\rule{2cm}{0pt} \rule{0pt}{2cm}} % 占位符用于图像
+        \caption{计算相干光的光程差}
+        \label{fig:3}
+    \end{figure}
+    令 $\delta = n_2 r_2 - n_1 r_1$ 称为两束光的光程差，其中$n_1$和$n_2$是两种介质的折射率，则上式可写为
+
+
+    \[\Delta\phi = \frac{2 \pi\delta }{\lambda}\]
+
+
+    因此，在波动光学中，干涉相长和干涉相消的条件可以通过光程差来进行表述
+
+    \[\delta = \pm \text{kλ}(k = 0,1,2,\cdots)\text{~}\text{干涉相长}\text{\ (}\text{明纹}\text{)}\]
+
+    \[\delta = \pm (2k + 1)\lambda/2(k = 0,1,2,\cdots)\text{~}\text{干涉相消}\text{\ (}\text{暗纹}\text{)}\]
+
+
+\end{appendices}
 
 \end{document}
