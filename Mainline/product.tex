@@ -198,15 +198,16 @@ $d$。模型的核心在于分析红外光在薄膜上下表面反射后产生�
 
 我们选用 \textbf{Savitzky-Golay滤波器} 对数据进行平滑。该滤波器能够在有效滤除噪声的同时，最大程度地保留信号的原始形状特征（如峰值的高度和宽度），这对于后续精确确定峰值位置至关重要。
 
-\begin{figure}[htbp]
+
+\subsubsection{全景峰值检测算法}
+
+\begin{figure}
     \centering
-    % 此处建议放置一张原始数据与平滑后数据的对比图
-    % \includegraphics[width=0.8\textwidth]{your_smoothing_comparison_figure.png}
-    \caption{原始光谱数据与经过Savitzky-Golay滤波后的平滑曲线对比图}
+    \includegraphics[width=0.8\textwidth]{figures/smoothing.png}
+    \caption{处理后的光谱数据}
     \label{fig:smoothing}
 \end{figure}
 
-\subsubsection{全景峰值检测算法}
 通过观察光谱数据（如图\ref{fig:smoothing}所示），我们发现信号特征在波数域内并非均匀分布。具体而言，以波数 $\nu_{th} = 2000 \, \text{cm}^{-1}$ 为界：
 \begin{itemize}
     \item \textbf{低波数区域 ($\nu < 2000 \, \text{cm}^{-1}$):} 干涉条纹的振幅大，信噪比高，峰形清晰明确。
@@ -219,6 +220,16 @@ $d$。模型的核心在于分析红外光在薄膜上下表面反射后产生�
     \item \textbf{高波数区域策略：} 采用一种更为敏感的自适应检测方法。该方法综合考虑了局部信号的统计特性（如均值和标准差），动态调整检测的峰高和阈值。同时，结合多重验证机制，确保在高噪声背景下依然能够可靠地识别出真实的、即使是较弱的峰值。
 \end{enumerate}
 最终，我们将两种策略在全范围检测后，分别提取的低、高波数区域的峰值点集合并，得到一个完整且可靠的干涉条纹极大值点序列 $\{\nu_k\}$。
+% ========== 在 5.2.2 节末尾插入以下代码 ==========
+最终，我们将两种策略在全范围检测后，分别提取的低、高波数区域的峰值点集合并，得到一个完整且可靠的干涉条纹极大值点序列 $\{\nu_k\}$。算法的执行效果如图\ref{fig:peak_detection}所示。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/peak_detection_10deg.png}
+    \caption{全景峰值检测算法在附件1数据上的执行效果}
+    \label{fig:peak_detection}
+    \textbf{注：}该图使用不同颜色的标记区分了在低波数区和高波数区检测到的干涉峰值点，直观体现了我们分区域处理策略的有效性。
+\end{figure}
 
 \subsubsection{波数间隔计算与稳健性优化}
 获得峰值位置序列 $\{\nu_k\}$ 后，我们计算所有相邻峰值之间的波数间隔，得到一个间隔样本集 $\Delta\nu_k = \nu_{k+1} - \nu_k$。理论上，这些间隔值应为一个常数。然而，由于残余噪声和算法误差，实际计算出的 $\{\Delta\nu_k\}$ 会存在一定的波动。
@@ -231,6 +242,16 @@ $d$。模型的核心在于分析红外光在薄膜上下表面反射后产生�
     \item 对剩余的有效间隔值求算术平均，得到最终的平均波数间隔 $\overline{\Delta\nu}$。
 \end{enumerate}
 这一优化步骤极大地增强了算法的抗干扰能力，确保了最终计算结果的稳健性。
+% ========== 在 5.2.3 节末尾插入以下代码 ==========
+这一优化步骤极大地增强了算法的抗干扰能力，确保了最终计算结果的稳健性。处理后的波数间隔分布如图\ref{fig:delta_nu_dist}所示，其分布集中，验证了我们提取的平均值具有良好的代表性。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/delta_nu_distribution_10deg.png}
+    \caption{附件1数据中有效波数间隔的分布直方图}
+    \label{fig:delta_nu_dist}
+    \textbf{注：}直方图显示了剔除异常值后，相邻峰值点波数间隔的分布情况。红色虚线标示了其平均值，这是计算厚度的关键参数。
+\end{figure}
 
 \subsection{计算结果与分析}
 我们分别将附件1（入射角 $\theta_1 = 10^\circ$）和附件2（入射角 $\theta_1 = 15^\circ$）的数据输入上述算法流程。根据问题一的模型，外延层厚度 $d$ 的计算公式为：
@@ -247,23 +268,24 @@ $d$。模型的核心在于分析红外光在薄膜上下表面反射后产生�
     \label{tab:results_q2}
     \begin{tabular}{lrr}
         \toprule
-        \textbf{参数}                               & \textbf{附件1}     & \textbf{附件2}     \\
+        \textbf{参数}                               & \textbf{附件1}                             & \textbf{附件2}                             \\
         \midrule
-        入射角 $\theta_1$ (度)                        & $10.0$           & $15.0$           \\
-        折射角 $\theta_2$ (度)                        & $3.85$           & $5.77$           \\
-        $\cos\theta_2$                            & $0.9977$         & $0.9949$         \\
-        检测到的总峰值数                                  & 78               & 78               \\
-        \quad -- 低波数区峰值数                          & 25               & 25               \\
-        \quad -- 高波数区峰值数                          & 53               & 53               \\
-        有效波数间隔数                                   & 75               & 76               \\
-        平均波数间隔 $\overline{\Delta\nu}$ (cm$^{-1}$) & $32.1548$        & $32.2389$        \\
-        \textbf{计算厚度 $d$ ($\mu$m)}                & \textbf{12.2015} & \textbf{12.1987} \\
+        入射角 $\theta_1$ (度)                        & $10.0$                                   & $15.0$                                   \\
+        $\cos\theta_2$                            & $0.9977$                                 & $0.9948$                                 \\
+        检测到的总峰值数                                  & 12                                       & 12                                       \\
+        \quad -- 低波数区峰值数                          & 4                                        & 4                                        \\
+        \quad -- 高波数区峰值数                          & 8                                        & 8                                        \\
+        有效波数间隔数                                   & 11                                       & 11                                       \\
+        平均波数间隔 $\overline{\Delta\nu}$ (cm$^{-1}$) & $246.0724$                               & $241.1460$                               \\
+        % \textbf{计算厚度 $d$ ($\mu$m)}                & \textbf{7.9869$\pm$0.6569}               & \textbf{8.1733$\pm$1.0622} \\
+        \textbf{计算厚度} $\bm{d}$ ($\mu$m)           & \textbf{7.9869}$\bm{\pm}$\textbf{0.6569} & \textbf{8.1733}$\bm{\pm}$\textbf{1.0622} \\
         \bottomrule
     \end{tabular}
 \end{table}
 
 从表\ref{tab:results_q2}可以看出，我们的算法在处理两份不同入射角的数据时，均识别出了大量的干涉条纹峰值，并通过稳健性优化得到了非常接近的平均波数间隔。
 
+% ========== 请用以下内容替换掉整个 5.4 小节 ==========
 
 \subsection{计算结果的可靠性分析}
 
@@ -273,77 +295,75 @@ $d$。模型的核心在于分析红外光在薄膜上下表面反射后产生�
 
 题目提供的附件1和附件2为同一块碳化硅晶圆片在入射角分别为$10^\circ$和$15^\circ$下测得的反射光谱数据。根据物理原理，尽管入射条件不同，但外延层厚度$d$应保持不变。我们分别利用两组独立数据计算厚度，结果如表\ref{tab:cross-validation}所示。
 
+% 注意：请根据你们代码运行的实际结果填写下表中的 d_10 和 d_15 以及计算出的相对误差
 \begin{table}[htbp]
     \centering
-    \caption{不同入射角下的厚度计算结果}
+    \caption{不同入射角下的厚度计算结果交叉验证}
     \label{tab:cross-validation}
     \begin{tabular}{cccc}
         \toprule
-        数据来源 & 入射角$\theta_1$ ($^\circ$) & 计算厚度$d$ ($\mu$m) & 相对误差                                                                                               \\
+        数据来源 & 入射角$\theta_1$ ($^\circ$) & 计算厚度$d$ ($\mu$m)        & 相对误差                                                                                                                  \\
         \midrule
-        附件1  & 10                       & $d_{10^\circ}$   & -                                                                                                  \\
-        附件2  & 15                       & $d_{15^\circ}$   & $\epsilon_d = \dfrac{|d_{10^\circ} - d_{15^\circ}|}{(d_{10^\circ} + d_{15^\circ})/2} \times 100\%$ \\
+        附件1  & 10                       & $d_{10^\circ} = 7.9869$ & \multirow{2}{*}{$\epsilon_d = \dfrac{|d_{10^\circ} - d_{15^\circ}|}{(d_{10^\circ} + d_{15^\circ})/2} \approx 2.28\%$} \\
+        附件2  & 15                       & $d_{15^\circ} = 8.1733$ &                                                                                                                       \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-两组独立计算结果的高度一致性（相对误差$\epsilon_d < 1\%$），证明了本文算法在不同测量条件下具有良好的稳健性。
+两组独立计算结果的相对误差仅为$2.28\%$，表现出高度的一致性。这初步证明了本文所建立的模型和设计的算法在不同测量条件下均能得到稳定、可靠的结果。
 
 \subsubsection{基于蒙特卡洛模拟的灵敏度分析}
 
-为进一步量化评估算法对测量噪声的抵抗能力，我们采用了蒙特卡洛模拟方法。在实际测量中，反射率$R$的测量值不可避免地包含随机误差。为模拟这一实际情况，我们假设测量噪声服从均值为零的正态分布，其标准差$\sigma_{\text{noise}}$取原始反射率数据标准差的$1\%$。
+为进一步量化评估算法对测量噪声的抵抗能力，我们采用了蒙特卡洛模拟方法。在实际测量中，反射率$R$的测量值不可避免地包含随机误差。我们通过在原始光谱数据中人为注入服从正态分布的随机噪声，来模拟真实的测量环境，并重复进行100次独立的厚度计算，以考察结果的稳定性。
 
-\begin{align}
-    R_{\text{noisy}}      & = R_{\text{true}} + \varepsilon, \quad \varepsilon \sim \mathcal{N}(0, \sigma_{\text{noise}}^2) \\
-    \sigma_{\text{noise}} & = 0.01 \times \sigma_{\text{reflectance}}
-\end{align}
+% 注意：请根据你们代码运行的实际结果填写下面的 \newcommand 定义
+\newcommand{\baseThickness}{7.9869} % 无噪声时的基准厚度
+\newcommand{\meanThickness}{7.9881} % 100次模拟的平均厚度
+\newcommand{\stdThickness}{0.0082}  % 100次模拟的标准差
+\newcommand{\relativeStd}{0.10}   % 相对标准差
 
-在此基础上，我们对附件1（$\theta_1 = 10^\circ$）的数据进行了100次独立模拟计算，每次模拟均在反射率数据中注入不同的随机噪声，然后重新运行完整算法计算厚度。模拟结果如图\ref{fig:monte-carlo}所示，统计指标如下：
-
-% 这里填入你们的具体结果
-\newcommand{\baseThickness}{7.9869}
-\newcommand{\meanThickness}{7.9881}
-\newcommand{\stdThickness}{0.0082}
-\newcommand{\relativeStd}{0.10}
-
+模拟结果如图\ref{fig:monte-carlo}所示，其核心统计指标如下：
 \begin{itemize}
-    \item 基准厚度（无噪声）：$d_{\text{base}} = \baseThickness \, \mu\text{m}$
-    \item 噪声下的平均厚度：$\mu_d = \meanThickness \, \mu\text{m}$
-    \item 厚度标准差：$\sigma_d = \stdThickness \, \mu\text{m}$
-    \item 相对标准差（变异系数）：$\text{CV} = \relativeStd\%$
-    \item 模拟成功率：$100\%$
+    \item \textbf{基准厚度 (无噪声):} $d_{\text{base}} = \baseThickness \, \mu\text{m}$
+    \item \textbf{模拟平均厚度:} $\mu_d = \meanThickness \, \mu\text{m}$
+    \item \textbf{模拟标准差:} $\sigma_d = \stdThickness \, \mu\text{m}$
+    \item \textbf{相对标准差 (变异系数):} $\text{CV} = \sigma_d / \mu_d \approx \relativeStd\%$
 \end{itemize}
 
-\begin{figure}[!h]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/monte_carlo_result.png}
-    \caption{蒙特卡洛模拟厚度计算结果分布}
+    \includegraphics[width=0.9\textwidth]{figures/monte_carlo_result.png}
+    \caption{蒙特卡洛模拟厚度计算结果分布 (N=100次)}
     \label{fig:monte-carlo}
-    \textbf{注：}直方图展示了100次模拟计算的厚度分布，红色虚线为无噪声基准值，绿色实线为噪声下的平均值，阴影区域表示均值±1标准差范围。
+    \textbf{注：}直方图展示了100次带噪模拟计算的厚度分布。红色虚线为无噪声基准值，绿色实线为模拟均值。结果高度集中在基准值附近，表明算法对噪声不敏感。
 \end{figure}
 
-模拟均值与基准值高度吻合，相对偏差仅为 $\frac{|{7.9881} - {7.9869}|}{{7.9869}} \times 100\% \approx {0.015}\%$。同时，相对标准差仅为$0.10\%$，表明即使在噪声干扰下，计算结果的波动范围极小（图~\ref{fig:monte_carlo}展示了厚度分布的直方图）。
+模拟结果表明，即使在存在随机噪声的情况下，计算得到的平均厚度 $\mu_d = \meanThickness \, \mu\text{m}$ 与基准厚度 $d_{\text{base}} = \baseThickness \, \mu\text{m}$ 的偏差极小。更重要的是，厚度计算结果的相对标准差仅为$\relativeStd\%$，这充分说明我们的算法具有非常强的鲁棒性，其计算结果不会因为微小的测量误差而产生剧烈波动。
 
-\subsubsection{综合分析与讨论}
+综合交叉验证和蒙特卡洛模拟的结果，我们可以自信地得出结论：本文提出的模型与算法是可靠的，能够精确、稳定地测定碳化硅外延层的厚度。
 
-综合以上分析，我们可以得出以下结论：
+% =================================================================
+% ========== 在 Section 5 (问题二) 的最末尾，添加以下总结性小节 ==========
 
-第一，算法具有优异的数值稳定性。蒙特卡洛模拟结果显示，在$1\%$的测量噪声水平下，厚度计算结果的相对标准差仅为$\relativeStd\%$，且平均厚度($\meanThickness \, \mu\text{m}$)与基准厚度($\baseThickness \, \mu\text{m}$)差异极小(${\meanThickness - \baseThickness} = 0.0012 \, \mu\text{m}$)。这表明本文算法对输入数据的微小扰动不敏感，具有良好的数值稳定性。
+\subsection{问题二小结}
 
-第二，算法具有高度的可靠性。$100\%$的模拟成功率表明算法在各种噪声情况下均能稳健运行，未出现计算失败或异常值。厚度值的分布集中且对称（图\ref{fig:monte-carlo}），进一步证明了算法的可靠性。
+综合以上对附件1和附件2数据的处理与分析，我们成功设计并实现了一套稳健的外延层厚度计算方案。通过交叉验证与蒙特卡洛模拟两种维度的可靠性分析，我们可以得出坚实的结论：
 
-第三，交叉验证与蒙特卡洛模拟的结果相互印证。不同入射角下的计算结果高度一致，与蒙特卡洛模拟显示的微小波动范围相吻合，从不同角度共同证明了本文算法的可靠性。
+首先，\textbf{模型与算法具有高度一致性}。针对同一晶圆片在$10^\circ$和$15^\circ$两种不同入射角下的测量数据，我们的算法分别计算出$7.9869 \, \mu\text{m}$和$8.1733 \, \mu\text{m}$的厚度，两者相对误差仅为$2.28\%$，证明了方案在不同测量条件下的稳定性。
 
-蒙特卡洛模拟的价值在于它量化了算法在真实测量环境中的预期表现。$\sigma_d = \stdThickness \, \mu\text{m}$的标准差表明，即使存在测量噪声，本文算法的计算结果仍能保持极高的精度和可重复性。
+其次，\textbf{算法具有卓越的鲁棒性}。为模拟真实测量环境中的噪声干扰，我们进行的100次蒙特卡洛模拟结果显示，厚度计算的相对标准差仅为$0.10\%$。这量化地证明了我们的算法对数据中的随机扰动不敏感，计算结果高度可靠。
 
-综上所述，本文建立的数学模型和算法不仅能够准确计算碳化硅外延层厚度，更在可靠性方面表现出色，能够满足实际工程应用的精度要求。
+综上所述，交叉验证证实了结果的\textbf{一致性}，蒙特卡洛模拟证实了过程的\textbf{稳健性}。两种分析相互印证，共同表明本文建立的数学模型和算法不仅能够准确计算碳化硅外延层厚度，更在可靠性方面表现出色，能够满足实际工程应用的精度要求。
 
+% =======================================================================
 
 
 \newpage
 %附录
-\begin{appendices} \label{app:optical_basis}
+\begin{appendices}
     \section{简谐振动与光的振动描述}
+    \label{app:optical_basis}
+
     \subsection{光的振动函数}
     时间变化的规律可以通过正弦函数和余弦函数来表述，其数学表达式为：
 
