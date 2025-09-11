@@ -93,136 +93,90 @@
 \section{问题一：模型的建立与求解}
 
 
+问题一的核心是根据反射光谱反演出外延层的厚度 $d$。其物理基础是经典的薄膜干涉现象。如图1所示，入射的红外光在材料的上下表面发生反射与折射，形成的两束主要反射光因光程差而发生干涉。这种干涉效应使得总反射率随光的波数呈现周期性振荡。本章的任务就是建立这种振荡周期（具体体现为光谱极值点的波数间隔 $\Delta\nu$）与外延层厚度 $d$ 之间的定量数学关系，从而构建一个可靠的测量模型。
+$d$。模型的核心在于分析红外光在薄膜上下表面反射后产生的光程差，并将其与实验测量的反射光谱数据（波数 $\nu$ 与反射率 $R$）建立联系。其涉及的物理光学基本原理（如光的干涉、光程差等）详见附录\ref{app:optical_basis}。
 
-\subsection{平行平面薄膜干涉(gpt-5 edition)}
-\subsection{问题设置与几何关系}
-在折射率为 \(n_1\) 的均匀介质中放置一层厚度为 \(d\) 的平行平面薄膜，其折射率为 \(n_2\)，并设 \(n_1<n_2\)。一束单色、平行入射的光 \(S\) 以入射角 \(\theta_1\) 入射到薄膜上表面。根据几何光学：
+\subsection{模型原理：薄膜干涉的光程差分析}
+对于本题中的碳化硅外延层结构，我们可以将其简化为一个理想的平行平面薄膜模型。设空气的折射率为 $n_0$（近似为1.0），外延层的折射率为 $n$，入射角为 $\theta$。根据斯涅尔定律 $n_0 \sin\theta = n \sin\phi$，光束在薄膜内的折射角 $\phi$ 满足：
+\begin{equation}
+    \cos\phi = \sqrt{1 - \sin^2\phi} = \sqrt{1 - \left(\frac{n_0}{n}\right)^2 \sin^2\theta}
+\end{equation}
+干涉主要来源于两束反射光：直接在上表面（空气-外延层界面）反射的光束1，以及折射入薄膜、经下表面（外延层-衬底界面）反射后再次折射出的光束2。这两束光的光程差 $\delta$ 是决定干涉结果的关键。
+光程差由两部分构成：
 \begin{itemize}
-    \item 一部分光在上表面（记为界面 \(M\)，即 1--2 界面）反射，形成反射光线 a；
-    \item 另一部分光折射进入薄膜，在下表面（记为界面 \(N\)，即 2--3 界面）反射后再次折射出薄膜，形成光线 b。
+    \item \textbf{几何光程差}：光束2在厚度为 $d$ 的薄膜内多走了一个“来回”的距离，其几何光程差为 $2nd\cos\phi$。
+    \item \textbf{半波损失}：光从光疏介质（空气, $n_0 \approx 1.0$）射向光密介质（SiC, $n \approx 2.55$）时，在\textbf{上表面}的反射会产生 $\pi$ 的相位突变，这等效于增加了 $\lambda/2$ 的光程。对于下表面的反射，我们遵循问题一的简化假设，暂不考虑其复杂的相位变化。
 \end{itemize}
-两束出射光 a 和 b 近似平行，经透镜 \(L\) 聚焦在同一像点 \(P\)。
+因此，两束反射光的总光程差 $\delta$ 为几何光程差与半波损失之和：
+\begin{equation}
+    \delta = 2nd\cos\phi + \frac{\lambda}{2}
+    \label{eq:path_diff}
+\end{equation}
+这个公式是后续所有模型推导的物理基础。
+% ======================================================================
+%                  建议在 Subsection 4.1 和 4.2 之间增加
+% ======================================================================
+\subsubsection{条纹可见性与菲涅尔反射率}
+% 修改建议：这是一个画龙点睛的补充。它利用了你的旧片段，增加了模型的物理深度。
+值得注意的是，要观察到清晰的干涉条纹，两束相干光（光束1和光束2）的强度需要具有可比性。光的强度与反射率直接相关，而反射率由菲涅尔公式决定。例如，在垂直入射（$\theta=0^\circ$）的简化情况下，上表面（空气-外延层）的反射率 $R_{0n}$ 和下表面（外延层-衬底）的等效反射率 $R_{ns}$ 分别为：
+\begin{equation}
+    R_{0n}=\left(\frac{n_0-n}{n_0+n}\right)^2; \quad R_{ns}=\left(\frac{n-n_s}{n+n_s}\right)^2
+\end{equation}
+其中 $n_s$ 为衬底折射率。只要 $R_{0n}$ 和 $R_{ns}$ 不是一个远大于另一个，干涉条纹就具有良好的可见度。这一讨论并非为了直接计算厚度，而是为了增强模型的物理完备性，说明我们从实验数据中观察到的清晰干涉现象是合理且符合物理预期的。
 
-\subsection{相干性与光程差}
-光线 a 与 b 源自同一入射光分束，满足相干叠加条件。在成像系统中可作辅助线保证比较同一路径的等效光程。透镜不引入附加光程差，可将两束光在 \(P\) 点的相位差归结为薄膜中往返段与空气段的光程差，并叠加界面处可能发生的“半波损失”（即 \(\pi\) 的相位突变）。
-记薄膜内折射角为 \(\theta_2\)，斯涅尔定律为
-\[
-    n_1\sin\theta_1=n_2\sin\theta_2,\quad \cos\theta_2=\sqrt{1-\left(\frac{n_1}{n_2}\right)^2\sin^2\theta_1}.
-\]
-则反射方向（两反射光束）在像点 \(P\) 的等效光程差为
-\[
-    \delta_{\rm ref} \,=\, 2\,n_2\,d\,\cos\theta_2 \, + \, \frac{\lambda}{2},
-\]
-其中 \(\tfrac{\lambda}{2}\) 来自一次从疏到密（\(n_1\to n_2\)）界面反射引入的半波损失。用 \(\theta_1\) 消去 \(\theta_2\) 可写成
-\[
-    \delta_{\rm ref} \,=\, 2\,d\,\sqrt{\,n_2^2 - n_1^2\sin^2\theta_1\,}\; +\; \frac{\lambda}{2}.
-\]
-对于透射方向（两透射光束），反射过程不额外引入半波损失，其光程差为
-\[
-    \delta_{\rm tr} \,=\, 2\,n_2\,d\,\cos\theta_2 \,=\, 2\,d\,\sqrt{\,n_2^2 - n_1^2\sin^2\theta_1\,}.
-\]
+\subsection{干涉条件与光谱极值}
 
-\subsection{垂直入射的特例}
-当 \(\theta_1=0\)（法向入射）时，\(\theta_2=0\)、\(\cos\theta_2=1\)，上式化为
-\[
-    \delta_{\rm ref}=2n_2d+\frac{\lambda}{2},\qquad \delta_{\rm tr}=2n_2d.
-\]
+干涉条纹的亮暗（即反射率的极大与极小）取决于光程差 $\delta$ 与波长 $\lambda$ 的关系。当光程差是波长的整数倍时，发生相长干涉，对应反射率的极大值：
+\begin{equation}
+    \delta = m\lambda, \quad (m \text{为整数，代表干涉级次})
+    \label{eq:constructive}
+\end{equation}
 
-\subsection{反射率与折射率（菲涅尔公式，重述版）}
-设三介质的折射率分别为：入射侧（空气）\(n_1\)、薄膜（外延层）\(n_2\)、衬底 \(n_3\)。入射角为 \(\theta_1\)，薄膜内折射角为 \(\theta_2\)，衬底内折射角为 \(\theta_3\)。斯涅尔定律分别为
-\[
-    n_1\sin\theta_1=n_2\sin\theta_2,\qquad n_2\sin\theta_2=n_3\sin\theta_3.
-\]
-\subsubsection{垂直入射（\(\theta_1=0^\circ\)）}
-1--2 界面反射率
-\[
-    R_{12}=\left(\frac{n_1-n_2}{n_1+n_2}\right)^2;\qquad
-    R_{23}=\left(\frac{n_2-n_3}{n_2+n_3}\right)^2.
-\]
-\subsubsection{斜入射（\(\theta_1>0^\circ\)），需按偏振分量区分}
-\paragraph{s 偏振（电矢量垂直入射面）}
-\[
-    R_{s,12}=\left(\frac{n_1\cos\theta_1 - n_2\cos\theta_2}{n_1\cos\theta_1 + n_2\cos\theta_2}\right)^2
-    =\left(\frac{n_1\cos\theta_1 - n_2\sqrt{1-(\tfrac{n_1}{n_2}\sin\theta_1)^2}}{n_1\cos\theta_1 + n_2\sqrt{1-(\tfrac{n_1}{n_2}\sin\theta_1)^2}}\right)^2,
-\]
-\[
-    R_{s,23}=\left(\frac{n_2\cos\theta_2 - n_3\cos\theta_3}{n_2\cos\theta_2 + n_3\cos\theta_3}\right)^2
-    =\left(\frac{n_2\cos\theta_2 - n_3\sqrt{1-(\tfrac{n_2}{n_3}\sin\theta_2)^2}}{n_2\cos\theta_2 + n_3\sqrt{1-(\tfrac{n_2}{n_3}\sin\theta_2)^2}}\right)^2.
-\]
-\paragraph{p 偏振（电矢量平行入射面）}
-\[
-    R_{p,12}=\left(\frac{n_1\cos\theta_2 - n_2\cos\theta_1}{n_1\cos\theta_2 + n_2\cos\theta_1}\right)^2
-    =\left(\frac{n_1\sqrt{1-(\tfrac{n_1}{n_2}\sin\theta_1)^2} - n_2\cos\theta_1}{n_1\sqrt{1-(\tfrac{n_1}{n_2}\sin\theta_1)^2} + n_2\cos\theta_1}\right)^2,
-\]
-\[
-    R_{p,23}=\left(\frac{n_2\cos\theta_3 - n_3\cos\theta_2}{n_2\cos\theta_3 + n_3\cos\theta_2}\right)^2
-    =\left(\frac{n_2\sqrt{1-(\tfrac{n_2}{n_3}\sin\theta_2)^2} - n_3\cos\theta_2}{n_2\sqrt{1-(\tfrac{n_2}{n_3}\sin\theta_2)^2} + n_3\cos\theta_2}\right)^2.
-\]
+将式 \eqref{eq:path_diff} 代入式 \eqref{eq:constructive}，我们得到反射光谱出现极大值的条件：
+\begin{equation}
+    2nd\cos\phi + \frac{\lambda}{2} = m\lambda
+\end{equation}
+整理后可得：
+\begin{equation}
+    2nd\cos\phi = \left(m - \frac{1}{2}\right)\lambda
+    \label{eq:peak_condition_lambda}
+\end{equation}
 
-\subsection{问题一的数学模型（整理并补充）}
-\subsubsection{基本量与约定}
-\begin{itemize}
-    \item 薄膜厚度：\(d\)（原文 \(e\)）。
-    \item 波数：\(\nu\)（cm\(^{-1}\)），与波长 \(\lambda\) 的关系为 \(\nu=1/\lambda\)、\(\lambda=1/\nu\)。
-    \item 入射角：\(\theta_1\in\{10^\circ,\,15^\circ\}\)。
-    \item 折射角：\(\theta_2\) 满足 \(n_1\sin\theta_1=n_2\sin\theta_2\)，且 \(\cos\theta_2=\sqrt{1-(\tfrac{n_1}{n_2})^2\sin^2\theta_1}\)。
-    \item 题设近似（同质外延）：在碳化硅样品上采用 \(n_2=n_3=2.55\) 常数近似（问题一的简化）。
-\end{itemize}
-\subsubsection{反射/透射的光程差}
-\[
-    \delta_{\rm ref}=2\,n_2\,d\,\cos\theta_2+\frac{\lambda}{2},\qquad
-    \delta_{\rm tr}=2\,n_2\,d\,\cos\theta_2.
-\]
-\subsubsection{干涉极值条件与“波数域”线性化}
-薄膜双光束干涉在反射方向的极值条件可统一写成 \(\delta_{\rm ref}=m\,\lambda\ (m\in\mathbb{Z})\)。代入 \(\delta_{\rm ref}\) 得
-\[
-    2\,n_2\,d\,\cos\theta_2 \,=\, \Big(m-\tfrac{1}{2}\Big)\lambda.
-\]
-两边同乘以 \(\nu=1/\lambda\)，得到“波数域”的线性关系
-\[
-    2\,n_2\,d\,\cos\theta_2\,\nu \,=\, m-\tfrac{1}{2}.
-\]
-可见，相邻同类型极值点（同为峰或同为谷）在波数轴上的间隔为常数
-\[
-    \Delta \nu \,=\, \nu_{k+1}-\nu_k \,=\, \frac{1}{2\,n_2\,d\,\cos\theta_2}.
-\]
-因而得到不依赖 \(m\) 的厚度计算公式
-\[
-    \boxed{\,d \,=\, \frac{1}{2\,n_2\,\cos\theta_2\,\Delta \nu}\,},\qquad
-    \cos\theta_2=\sqrt{1-\left(\frac{n_1}{n_2}\right)^2\sin^2\theta_1}.
-\]
-单位换算：若 \(\nu\) 用 cm\(^{-1}\)，则上式求得的 \(d\) 为 cm；换算为 \(\mu\)m：
-\[
-    \boxed{\,d_{\mu{\rm m}} \,=\, \frac{10^4}{2\,n_2\,\cos\theta_2\,\Delta \nu}\,}.
-\]
-注：对于透射方向，同理可得 \(2\,n_2\,d\,\cos\theta_2\,\nu=m\)，相邻极值的 \(\Delta\nu\) 仍满足同一厚度公式，因此用“相邻同类型极值的波数间隔”估计厚度在反射与透射两种读法下是一致的。
+\subsection{从波长到波数：模型的线性化}
 
-\subsubsection{与反射率公式的衔接}
-上述厚度公式基于几何相位条件，与菲涅尔反射率 \(R\) 的作用是相互补充的：菲涅尔公式给出每个界面处的幅度反射/透射比例（决定条纹对比度与可见性），而条纹周期（从而 \(\Delta\nu\)）由相位项 \(2n_2 d \cos\theta_2\) 决定。问题一仅考虑一次反射/透射的双光束情形，利用极值间距即可稳健求 \(d\)。
+实验数据提供的是波数 $\nu$（单位 cm$^{-1}$），它与波长 $\lambda$ 的关系为 $\nu = 1/\lambda$。为了利用实验数据，我们将模型从波长域转换到波数域。对式 \eqref{eq:peak_condition_lambda} 两边同除以 $\lambda$，得到：
+\begin{equation}
+    2nd\cos\phi \cdot \frac{1}{\lambda} = m - \frac{1}{2}
+\end{equation}
+即：
+\begin{equation}
+    2nd\cos\phi \cdot \nu = m - \frac{1}{2}
+    \label{eq:linear_model_nu}
+\end{equation}
+式 \eqref{eq:linear_model_nu} 是我们模型的核心关系。它表明，反射率极大值点对应的波数 $\nu$ 与干涉级次 $m$ 之间存在线性关系。这也解释了为什么在光谱图上看到的干涉条纹峰值在波数轴上大致是等间距分布的。
+% ======================================================================
+%                  建议替换的 Subsection 4.5
+% ======================================================================
+\subsection{最终模型与求解流程}
 
-\subsubsection{可执行的厚度求解步骤}
+% 修改建议：增加总结性语句，强化从“建模”到“求解”的过渡。
+至此，我们成功地将不可直接测量的微观厚度 $d$ 与可从宏观光谱数据中提取的物理量——平均波数间隔 $\overline{\Delta\nu}$ 联系起来，得到了最终的数学模型：
+\begin{equation}
+    \boxed{d_{\mu\text{m}} = \frac{10^4}{2n\cos\phi \cdot \overline{\Delta\nu}}}
+    \label{eq:final_d_formula_um_final} % 建议统一公式标签
+\end{equation}
+其中，$\cos\phi = \sqrt{1 - (1/n)^2 \sin^2\theta}$。该模型简洁、鲁棒，是解决本题的核心。
+
+基于此模型，求解外延层厚度的计算流程可清晰地规划为以下步骤：
 \begin{enumerate}
-    \item 已知参量与角度修正：设定 \(n_1=1.0\)（空气），取题设近似 \(n_2=2.55\)。由入射角 \(\theta_1 \in \{10^\circ, 15^\circ\}\) 计算
-          \[
-              \cos\theta_2=\sqrt{1-\left(\frac{n_1}{n_2}\right)^2\sin^2\theta_1}.
-          \]
-    \item 从反射率–波数曲线中取极值：对测得的 \((\nu, R)\) 光谱进行平滑与极值检测，得到一串相邻的“同类型”极值波数 \(\{\nu_k\}\)。
-    \item 求平均条纹间距：计算差分 \(\Delta \nu_k=\nu_{k+1}-\nu_k\)，对有效区间取加权或简单平均 \(\overline{\Delta\nu}\)（可去除异常值）。
-    \item 代入厚度公式：计算 \(d_{\mu{\rm m}}=\dfrac{10^4}{2\,n_2\,\cos\theta_2\,\overline{\Delta\nu}}\)。若有两组入射角数据，可分别计算后做一致性比较。
+    \item \textbf{参数确定}：根据题设，取外延层折射率 $n=2.55$，空气折射率 $n_0=1.0$。入射角 $\theta$ 分别为 $10^\circ$ 和 $15^\circ$。
+    \item \textbf{数据预处理}：对附件提供的 $(\nu, R)$ 光谱数据进行平滑滤波，以减少噪声对极值点判断的干扰。
+    \item \textbf{极值点提取}：在预处理后的光谱曲线上，寻找所有反射率 $R$ 的极大值点，记录它们对应的波数 $\{\nu_k\}$。
+    \item \textbf{计算波数间隔}：计算所有相邻极大值点的波数间隔 $\Delta\nu_k = \nu_{k+1} - \nu_k$。
+    \item \textbf{稳健性处理}：对所有的 $\Delta\nu_k$ 进行统计分析，剔除异常值，计算出稳健的平均波数间隔 $\overline{\Delta\nu}$。
+    \item \textbf{厚度计算}：将已知的 $n, \theta$ 和计算出的 $\overline{\Delta\nu}$ 代入公式 \eqref{eq:final_d_formula_um_final}，计算出最终的外延层厚度 $d$。
 \end{enumerate}
-
-\subsubsection{符号与单位说明（本段中出现的新记号）}
-\begin{itemize}
-    \item \(d\)：外延层厚度，cm 或 \(\mu\)m。
-    \item \(\lambda\)：波长，cm 或 \(\mu\)m。
-    \item \(\nu\)：波数，cm\(^{-1}\)，满足 \(\nu=1/\lambda\)。
-    \item \(\theta_1\)：入射角（在介质 \(n_1\) 中）。
-    \item \(\theta_2\)：薄膜内折射角，\(\cos\theta_2=\sqrt{1-(\tfrac{n_1}{n_2})^2\sin^2\theta_1}\)。
-    \item \(n_1,n_2,n_3\)：分别为空气、薄膜（外延层）、衬底的折射率。
-    \item \(\delta_{\rm ref},\delta_{\rm tr}\)：反射/透射两束干涉的光程差。
-    \item \(R_{(\cdot)}\)：各界面、各偏振分量的反射率。
-\end{itemize}
-
+这一套完整的求解流程将在问题二中进行详细的算法设计与实现，从而将理论模型转化为可操作的计算方案。
 
 \section{问题二：外延层厚度计算算法设计与结果分析}
 
@@ -388,7 +342,7 @@
 
 \newpage
 %附录
-\begin{appendices}
+\begin{appendices} \label{app:optical_basis}
     \section{简谐振动与光的振动描述}
     \subsection{光的振动函数}
     时间变化的规律可以通过正弦函数和余弦函数来表述，其数学表达式为：
@@ -524,7 +478,8 @@
 
     \begin{figure}[ht]
         \centering
-        \fbox{\rule{2cm}{0pt} \rule{0pt}{2cm}} % 占位符用于图像
+        \includegraphics[width=0.6\textwidth]{figures/figure3.png} % 替换为实际图像文件路径
+
         \caption{计算相干光的光程差}
         \label{fig:3}
     \end{figure}
